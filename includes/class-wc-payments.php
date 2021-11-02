@@ -993,7 +993,10 @@ class WC_Payments {
 		$url         = $woopay_host . '/wp-json/woopay/init';
 		$body        = [
 			'user_id'              => get_current_user_id(),
-			'store_logo'           => esc_url( wp_get_attachment_url( get_theme_mod( 'custom_logo' ) ) ),
+			'store_data'           => [
+				'store_logo' => esc_url( wp_get_attachment_url( get_theme_mod( 'custom_logo' ) ) ),
+				'store_name' => esc_html( get_bloginfo( 'name' ) ),
+			],
 			'session_cookie_name'  => $session_cookie_name,
 			'session_cookie_value' => $_COOKIE[ $session_cookie_name ],
 		];
