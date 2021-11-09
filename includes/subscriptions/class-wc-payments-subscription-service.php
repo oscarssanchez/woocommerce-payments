@@ -346,6 +346,12 @@ class WC_Payments_Subscription_Service {
 			throw new Exception( $checkout_error_message );
 		}
 
+		if ( $subscription->get_total() <= 0 ) {
+			$subscription->add_order_note( sprintf( __( "Subscription creation halted as the subscription doesn't meet the minimum purchase amount.", 'woocommerce-payments' ) ) );
+			// Translators: Placeholder is the subscription total amount with the currency symbol.
+			throw new Exception( sprintf( __( 'There was a problem creating your subscription. It must have a total greater than %s. Please contact us for assistance.', 'woocommerce-payments' ), wc_price( $subscription->get_total() ) ) );
+		}
+
 		try {
 			$subscription_data = $this->prepare_wcpay_subscription_data( $wcpay_customer_id, $subscription );
 			$response          = $this->payments_api_client->create_subscription( $subscription_data );
