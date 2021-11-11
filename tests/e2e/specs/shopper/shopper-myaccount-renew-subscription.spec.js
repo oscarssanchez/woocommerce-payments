@@ -10,9 +10,10 @@ import {
 	describeif,
 	merchantWCP,
 	shopperWCP,
+	blockAssets,
+	fillCardDetails,
+	setupCheckout,
 } from '../../utils';
-
-import { fillCardDetails, setupCheckout } from '../../utils/payments';
 
 const productName = 'Subscription for renewal testing';
 const productSlug = 'subscription-for-renewal-testing';
@@ -25,6 +26,7 @@ describeif( RUN_SUBSCRIPTIONS_TESTS )(
 	'Subscriptions > Renew a subscription in my account',
 	() => {
 		beforeAll( async () => {
+			blockAssets();
 			await merchant.login();
 
 			// Create subscription product with signup fee

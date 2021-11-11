@@ -5,9 +5,14 @@ import config from 'config';
 
 const { merchant, shopper, withRestApi } = require( '@woocommerce/e2e-utils' );
 
-import { RUN_SUBSCRIPTIONS_TESTS, describeif, merchantWCP } from '../../utils';
-
-import { fillCardDetails, setupCheckout } from '../../utils/payments';
+import {
+	RUN_SUBSCRIPTIONS_TESTS,
+	describeif,
+	merchantWCP,
+	fillCardDetails,
+	setupCheckout,
+	blockAssets,
+} from '../../utils';
 
 const nowLocal = new Date();
 const nextPayDate = 'In 7 days';
@@ -26,6 +31,7 @@ describeif( RUN_SUBSCRIPTIONS_TESTS )(
 		// Setup the subscription product.
 		// Take note of the the product ID.
 		beforeAll( async () => {
+			blockAssets();
 			await merchant.login();
 			productId = await merchantWCP.createSubscriptionProduct(
 				productName,

@@ -15,9 +15,10 @@ import {
 	describeif,
 	merchantWCP,
 	shopperWCP,
+	fillCardDetails,
+	setupCheckout,
+	blockAssets,
 } from '../../utils';
-
-import { fillCardDetails, setupCheckout } from '../../utils/payments';
 
 const productName = `Subscription product ${ Date.now() }`;
 const customerBilling = config.get( 'addresses.customer.billing' );
@@ -52,6 +53,7 @@ describeif( RUN_SUBSCRIPTIONS_TESTS )(
 		// Setup the subscription product.
 		// Take note of the the product ID.
 		beforeAll( async () => {
+			blockAssets();
 			await merchant.login();
 			productId = await merchantWCP.createSubscriptionProduct(
 				productName,

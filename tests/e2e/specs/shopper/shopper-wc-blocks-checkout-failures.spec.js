@@ -13,21 +13,20 @@ import {
 	merchantWCP,
 	describeif,
 	RUN_WC_BLOCKS_TESTS,
+	blockAssets,
+	fillCardDetailsWCB,
+	clearWCBCardDetails,
+	confirmCardAuthentication,
 } from '../../utils';
 
 const shippingDetails = config.get( 'addresses.customer.shipping' );
 const productName = config.get( 'products.simple.name' );
 
-import {
-	fillCardDetailsWCB,
-	clearWCBCardDetails,
-	confirmCardAuthentication,
-} from '../../utils/payments';
-
 describeif( RUN_WC_BLOCKS_TESTS )(
 	'WooCommerce Blocks > Checkout failures',
 	() => {
 		beforeAll( async () => {
+			blockAssets();
 			await merchant.login();
 			await merchantWCP.addNewPageCheckoutWCB();
 			await merchant.logout();

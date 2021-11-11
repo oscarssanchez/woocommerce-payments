@@ -8,7 +8,11 @@ const { merchant, shopper, uiUnblocked } = require( '@woocommerce/e2e-utils' );
 /**
  * Internal dependencies
  */
-import { fillCardDetails, setupProductCheckout } from '../../utils/payments';
+import {
+	fillCardDetails,
+	setupProductCheckout,
+	blockAssets,
+} from '../../utils';
 
 let orderId;
 const selectorQty = '.refund_order_item_qty';
@@ -35,6 +39,7 @@ const dataTable = [
 
 describe( 'Order > Refund Failure', () => {
 	beforeAll( async () => {
+		blockAssets();
 		// Place an order to refund later
 		await setupProductCheckout(
 			config.get( 'addresses.customer.billing' )

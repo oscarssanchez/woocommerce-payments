@@ -8,17 +8,18 @@ const { shopper } = require( '@woocommerce/e2e-utils' );
 /**
  * Internal dependencies
  */
-
-import { shopperWCP, takeScreenshot } from '../../utils';
-
 import {
+	shopperWCP,
+	takeScreenshot,
 	fillCardDetails,
 	setupProductCheckout,
 	confirmCardAuthentication,
-} from '../../utils/payments';
+	blockAssets,
+} from '../../utils';
 
 describe( 'Successful purchase', () => {
 	beforeAll( async () => {
+		blockAssets();
 		await page.goto( config.get( 'url' ), { waitUntil: 'networkidle0' } );
 	} );
 

@@ -11,12 +11,13 @@ const { merchant, shopper } = require( '@woocommerce/e2e-utils' );
  */
 import { fillCardDetails, setupProductCheckout } from '../../utils/payments';
 
-import { merchantWCP } from '../../utils';
+import { merchantWCP, blockAssets } from '../../utils';
 
 let orderId;
 
 describe( 'Disputes > Save dispute for editing', () => {
 	beforeAll( async () => {
+		blockAssets();
 		await page.goto( config.get( 'url' ), { waitUntil: 'networkidle0' } );
 
 		// Place an order with a dispute credit card

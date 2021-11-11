@@ -17,10 +17,12 @@ import {
 	clearCardDetails,
 	setupProductCheckout,
 	confirmCardAuthentication,
-} from '../../utils/payments';
+	blockAssets,
+} from '../../utils';
 
 describe( 'Shopper > Checkout > Failures with various cards', () => {
 	beforeAll( async () => {
+		blockAssets();
 		await createSimpleProduct();
 		await setupProductCheckout(
 			config.get( 'addresses.customer.billing' )

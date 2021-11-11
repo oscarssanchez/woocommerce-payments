@@ -6,10 +6,11 @@ const { merchant } = require( '@woocommerce/e2e-utils' );
 /**
  * Internal dependencies
  */
-import { merchantWCP, takeScreenshot } from '../../utils';
+import { merchantWCP, takeScreenshot, blockAssets } from '../../utils';
 
 describe( 'Admin deposits', () => {
 	beforeAll( async () => {
+		blockAssets();
 		await merchant.login();
 	} );
 

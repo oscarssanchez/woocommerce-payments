@@ -5,12 +5,13 @@ import config from 'config';
 
 const { merchant } = require( '@woocommerce/e2e-utils' );
 
-import { RUN_SUBSCRIPTIONS_TESTS, describeif } from '../../utils';
+import { RUN_SUBSCRIPTIONS_TESTS, describeif, blockAssets } from '../../utils';
 
 describeif( RUN_SUBSCRIPTIONS_TESTS )(
 	'WooCommerce > Settings > Subscriptions',
 	() => {
 		beforeAll( async () => {
+			blockAssets();
 			await page.goto( config.get( 'url' ), {
 				waitUntil: 'networkidle0',
 			} );

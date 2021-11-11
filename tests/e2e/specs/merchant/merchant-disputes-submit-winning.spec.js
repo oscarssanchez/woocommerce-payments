@@ -13,13 +13,19 @@ const {
 /**
  * Internal dependencies
  */
-import { merchantWCP, uiLoaded } from '../../utils';
-import { fillCardDetails, setupProductCheckout } from '../../utils/payments';
+import {
+	merchantWCP,
+	uiLoaded,
+	blockAssets,
+	fillCardDetails,
+	setupProductCheckout,
+} from '../../utils';
 
 let orderId;
 
 describe( 'Disputes > Submit winning dispute', () => {
 	beforeAll( async () => {
+		blockAssets();
 		await page.goto( config.get( 'url' ), { waitUntil: 'networkidle0' } );
 
 		// Place an order to dispute later
