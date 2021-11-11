@@ -5,7 +5,6 @@ cwd=$(pwd)
 export WCP_ROOT=$cwd
 export E2E_ROOT="$cwd/tests/e2e"
 export WP_URL="localhost:8084"
-export SERVER_PATH="$E2E_ROOT/deps/wcp-server"
 export DEV_TOOLS_DIR="wcp-dev-tools"
 export DEV_TOOLS_PATH="$E2E_ROOT/deps/$DEV_TOOLS_DIR"
 
