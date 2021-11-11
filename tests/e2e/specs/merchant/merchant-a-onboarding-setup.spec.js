@@ -7,8 +7,11 @@ const {
 	withRestApi,
 } = require( '@woocommerce/e2e-utils' );
 
+import { blockAssets } from '../../utils';
+
 describe( 'Onboarding > WooCommerce Setup Wizard & Task List', () => {
 	beforeAll( async () => {
+		blockAssets();
 		await merchant.login();
 		await withRestApi.resetOnboarding();
 		await withRestApi.deleteAllShippingZones();

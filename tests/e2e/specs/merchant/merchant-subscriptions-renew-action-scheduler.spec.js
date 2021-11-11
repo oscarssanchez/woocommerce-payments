@@ -15,9 +15,10 @@ import {
 	RUN_ACTION_SCHEDULER_TESTS,
 	describeif,
 	merchantWCP,
+	blockAssets,
+	fillCardDetails,
+	setupCheckout,
 } from '../../utils';
-
-import { fillCardDetails, setupCheckout } from '../../utils/payments';
 
 const productName = 'Subscription for systems renewal';
 const productSlug = 'subscription-for-systems-renewal';
@@ -28,6 +29,7 @@ describeif( RUN_SUBSCRIPTIONS_TESTS, RUN_ACTION_SCHEDULER_TESTS )(
 	'Subscriptions > Renew a subscription via Action Scheduler',
 	() => {
 		beforeAll( async () => {
+			blockAssets();
 			await merchant.login();
 
 			// Create subscription product with signup fee

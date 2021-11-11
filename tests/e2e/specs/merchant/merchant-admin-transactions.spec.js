@@ -11,10 +11,12 @@ import {
 	merchantWCP,
 	takeScreenshot,
 	describeif,
+	blockAssets,
 } from '../../utils';
 
 describe( 'Admin transactions', () => {
 	beforeAll( async () => {
+		blockAssets();
 		await merchant.login();
 	} );
 

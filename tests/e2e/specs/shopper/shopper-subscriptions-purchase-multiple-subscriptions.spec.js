@@ -10,6 +10,7 @@ import {
 	describeif,
 	merchantWCP,
 	shopperWCP,
+	blockAssets,
 } from '../../utils';
 
 import { fillCardDetails, setupCheckout } from '../../utils/payments';
@@ -28,6 +29,7 @@ describeif( RUN_SUBSCRIPTIONS_TESTS )(
 		// Setup 2 subscription products.
 		// Remember their product id's.
 		beforeAll( async () => {
+			blockAssets();
 			await merchant.login();
 
 			for ( const productName of productNames ) {

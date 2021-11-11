@@ -8,7 +8,7 @@ const { shopper } = require( '@woocommerce/e2e-utils' );
 /**
  * Internal dependencies
  */
-import { shopperWCP } from '../../utils/flows';
+import { shopperWCP, blockAssets } from '../../utils';
 
 const MIN_WAIT_TIME_BETWEEN_PAYMENT_METHODS = 20000;
 const cards = Object.entries( config.get( 'cards' ) );
@@ -18,6 +18,7 @@ const validCards = cards.filter( ( [ cardType ] ) =>
 
 describe( 'Payment Methods', () => {
 	beforeAll( async () => {
+		blockAssets();
 		await shopper.login();
 		await shopperWCP.goToPaymentMethods();
 	} );

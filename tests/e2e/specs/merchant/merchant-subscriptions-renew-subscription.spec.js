@@ -11,9 +11,14 @@ const {
 	uiUnblocked,
 } = require( '@woocommerce/e2e-utils' );
 
-import { RUN_SUBSCRIPTIONS_TESTS, describeif, merchantWCP } from '../../utils';
-
-import { fillCardDetails, setupCheckout } from '../../utils/payments';
+import {
+	RUN_SUBSCRIPTIONS_TESTS,
+	describeif,
+	merchantWCP,
+	blockAssets,
+	fillCardDetails,
+	setupCheckout,
+} from '../../utils';
 
 const productName = 'Subscription for merchant renewal';
 const productSlug = 'subscription-for-merchant-renewal';
@@ -26,6 +31,7 @@ describeif( RUN_SUBSCRIPTIONS_TESTS )(
 	'Subscriptions > Renew a subscription as a merchant',
 	() => {
 		beforeAll( async () => {
+			blockAssets();
 			await merchant.login();
 
 			// Create subscription product with signup fee

@@ -8,14 +8,20 @@ const { merchant, shopper, uiUnblocked } = require( '@woocommerce/e2e-utils' );
 /**
  * Internal dependencies
  */
-import { merchantWCP, takeScreenshot } from '../../utils';
-import { fillCardDetails, setupProductCheckout } from '../../utils/payments';
+import {
+	merchantWCP,
+	takeScreenshot,
+	blockAssets,
+	fillCardDetails,
+	setupProductCheckout,
+} from '../../utils';
 
 let orderId;
 let orderAmount;
 
 describe( 'Order > Full refund', () => {
 	beforeAll( async () => {
+		blockAssets();
 		// Place an order to refund later
 		await setupProductCheckout(
 			config.get( 'addresses.customer.billing' )

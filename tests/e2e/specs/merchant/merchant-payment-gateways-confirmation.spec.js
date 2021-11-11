@@ -4,6 +4,7 @@
 import config from 'config';
 
 const { merchant } = require( '@woocommerce/e2e-utils' );
+import { blockAssets } from '../../utils';
 
 const WCADMIN_GATEWAYS_LIST = `${ config.get(
 	'url'
@@ -18,6 +19,7 @@ const WC_GATEWAYS_LIST_TABLE__WC_PAYMENTS_TOGGLE =
 
 describe( 'payment gateways disable confirmation', () => {
 	beforeAll( async () => {
+		blockAssets();
 		await merchant.login();
 
 		await page.goto( WCPAY_DEV_TOOLS, {

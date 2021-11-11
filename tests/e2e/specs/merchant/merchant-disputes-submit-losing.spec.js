@@ -8,13 +8,18 @@ const { merchant, shopper } = require( '@woocommerce/e2e-utils' );
 /**
  * Internal dependencies
  */
-import { merchantWCP } from '../../utils';
-import { fillCardDetails, setupProductCheckout } from '../../utils/payments';
+import {
+	merchantWCP,
+	fillCardDetails,
+	setupProductCheckout,
+	blockAssets,
+} from '../../utils';
 
 let orderId;
 
 describe( 'Disputes > Submit losing dispute', () => {
 	beforeAll( async () => {
+		blockAssets();
 		await page.goto( config.get( 'url' ), { waitUntil: 'networkidle0' } );
 
 		// Place an order to dispute later

@@ -10,6 +10,7 @@ import {
 	describeif,
 	merchantWCP,
 	uiLoaded,
+	blockAssets,
 } from '../../utils';
 
 import { fillCardDetails, setupCheckout } from '../../utils/payments';
@@ -25,6 +26,7 @@ describeif( RUN_SUBSCRIPTIONS_TESTS )(
 	'Subscriptions > Purchase subscription without signup fee (free trial)',
 	() => {
 		beforeAll( async () => {
+			blockAssets();
 			await merchant.login();
 
 			// Create subscription product without signup fee

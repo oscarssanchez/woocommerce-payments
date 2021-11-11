@@ -8,8 +8,12 @@ const { merchant, shopper, uiUnblocked } = require( '@woocommerce/e2e-utils' );
 /**
  * Internal dependencies
  */
-import { merchantWCP } from '../../utils';
-import { fillCardDetails, setupProductCheckout } from '../../utils/payments';
+import {
+	merchantWCP,
+	blockAssets,
+	fillCardDetails,
+	setupProductCheckout,
+} from '../../utils';
 
 const card = config.get( 'cards.basic' );
 const product1 = config.get( 'products.simple.name' );
@@ -55,6 +59,7 @@ describe.each( dataTable )(
 		let orderTotal;
 
 		beforeAll( async () => {
+			blockAssets();
 			// Set up the test order
 			await setupProductCheckout(
 				config.get( 'addresses.customer.billing' ),

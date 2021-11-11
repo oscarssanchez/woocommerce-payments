@@ -5,13 +5,15 @@ import config from 'config';
 
 const { merchant, shopper, withRestApi } = require( '@woocommerce/e2e-utils' );
 
-import { RUN_SUBSCRIPTIONS_TESTS, describeif, merchantWCP } from '../../utils';
-
 import {
+	RUN_SUBSCRIPTIONS_TESTS,
+	describeif,
+	merchantWCP,
 	fillCardDetails,
 	setupCheckout,
 	confirmCardAuthentication,
-} from '../../utils/payments';
+	blockAssets,
+} from '../../utils';
 
 const nowLocal = new Date();
 const nowUTC = new Date(
@@ -35,6 +37,7 @@ describeif( RUN_SUBSCRIPTIONS_TESTS )(
 	'Subscriptions > Purchase subscription with free trial',
 	() => {
 		beforeAll( async () => {
+			blockAssets();
 			await merchant.login();
 
 			// Create subscription product without signup fee

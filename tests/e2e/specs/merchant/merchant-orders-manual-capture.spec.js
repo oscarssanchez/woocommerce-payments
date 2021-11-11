@@ -13,14 +13,19 @@ import config from 'config';
 /**
  * Internal dependencies
  */
-import { merchantWCP } from '../../utils';
-import { fillCardDetails, setupProductCheckout } from '../../utils/payments';
+import {
+	merchantWCP,
+	blockAssets,
+	fillCardDetails,
+	setupProductCheckout,
+} from '../../utils';
 
 const chkboxCaptureLaterOption = '#inspector-checkbox-control-7';
 let orderId;
 
 describe( 'Order > Manual Capture', () => {
 	beforeAll( async () => {
+		blockAssets();
 		// As the merchant, enable the "Issue an authorization on checkout, and capture later" option in the Payment Settings page
 		await merchant.login();
 		await merchantWCP.openWCPSettings();

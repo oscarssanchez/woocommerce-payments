@@ -18,8 +18,10 @@ import {
 	describeif,
 	shopperWCP,
 	merchantWCP,
+	fillCardDetails,
+	setupCheckout,
+	blockAssets,
 } from '../../utils';
-import { fillCardDetails, setupCheckout } from '../../utils/payments';
 
 const productName = 'Subscription for manage payments';
 const productSlug = 'subscription-for-manage-payments';
@@ -30,6 +32,7 @@ describeif( RUN_SUBSCRIPTIONS_TESTS )(
 	'Shopper > Subscriptions > Manage Payment Methods',
 	() => {
 		beforeAll( async () => {
+			blockAssets();
 			// Create subscription product
 			await merchant.login();
 			await merchantWCP.createSubscriptionProduct(

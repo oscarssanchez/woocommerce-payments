@@ -8,8 +8,7 @@ const { shopper } = require( '@woocommerce/e2e-utils' );
 /**
  * Internal dependencies
  */
-import { shopperWCP } from '../../utils/flows';
-const { fillCardDetails } = require( '../../utils/payments' );
+import { shopperWCP, blockAssets, fillCardDetails } from '../../utils';
 
 const cards = Object.entries( config.get( 'cards' ) );
 const invalidCards = cards.filter( ( [ cardType ] ) =>
@@ -18,6 +17,7 @@ const invalidCards = cards.filter( ( [ cardType ] ) =>
 
 describe( 'Payment Methods', () => {
 	beforeAll( async () => {
+		blockAssets();
 		await shopper.login();
 	} );
 

@@ -8,11 +8,13 @@ const { shopper, merchant } = require( '@woocommerce/e2e-utils' );
 /**
  * Internal dependencies
  */
-import { merchantWCP, shopperWCP } from '../../utils/flows';
 import {
+	merchantWCP,
+	shopperWCP,
 	confirmCardAuthentication,
 	setupProductCheckout,
-} from '../../utils/payments';
+	blockAssets,
+} from '../../utils';
 
 const cards = [
 	[ 'basic', config.get( 'cards.basic' ) ],
@@ -24,6 +26,7 @@ describe( 'Saved cards ', () => {
 		'when using a %s card added through my account',
 		( cardType, card ) => {
 			beforeAll( async () => {
+				blockAssets();
 				await merchant.login();
 				await merchantWCP.activateUpe();
 				await merchant.logout();
