@@ -1,8 +1,6 @@
 /**
  * External dependencies
  */
-import shell from 'shelljs';
-import config from 'config';
 import { get } from 'lodash';
 import {
 	enablePageDialogAccept,
@@ -28,9 +26,6 @@ const OBSERVED_CONSOLE_MESSAGE_TYPES = {
 	warning: 'warn',
 	error: 'error',
 };
-
-const WP_CONTAINER = 'wcp_e2e_wordpress';
-const WP_CLI = `docker run --rm --user xfs --volumes-from ${ WP_CONTAINER } --network container:${ WP_CONTAINER } wordpress:cli`;
 
 async function setupBrowser() {
 	await setBrowserViewport( 'large' );
@@ -163,27 +158,6 @@ function setTestTimeouts() {
 	jest.setTimeout( TIMEOUT );
 }
 
-async function createCustomerUser() {
-	const username = config.get( 'users.customer.username' );
-	const email = config.get( 'users.customer.email' );
-	const password = config.get( 'users.customer.password' );
-
-	shell.exec( `${ WP_CLI } wp user delete ${ username } --yes`, {
-		silent: true,
-	} );
-	shell.exec(
-		`${ WP_CLI } wp user create ${ username } ${ email } --role=customer --user_pass=${ password }`,
-		{ silent: true }
-	);
-}
-
-async function removeGuestUser() {
-	const email = config.get( 'users.guest.email' );
-	shell.exec( `${ WP_CLI } wp user delete ${ email } --yes`, {
-		silent: true,
-	} );
-}
-
 // Before every test suite run, delete all content created by the test. This ensures
 // other posts/comments/etc. aren't dirtying tests and tests don't depend on
 // each other's side-effects.
@@ -192,8 +166,6 @@ beforeAll( async () => {
 	enablePageDialogAccept();
 	observeConsoleLogging();
 	setTestTimeouts();
-	await createCustomerUser();
-	await removeGuestUser();
 	await setupBrowser();
 } );
 
