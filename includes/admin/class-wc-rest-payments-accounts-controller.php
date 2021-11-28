@@ -32,6 +32,15 @@ class WC_REST_Payments_Accounts_Controller extends WC_Payments_REST_Controller {
 				'permission_callback' => [ $this, 'check_permission' ],
 			]
 		);
+		register_rest_route(
+			$this->namespace,
+			'/payments/accounts',
+			[
+				'methods'             => WP_REST_Server::DELETABLE,
+				'callback'            => [ $this, 'delete_account' ],
+				'permission_callback' => [ $this, 'check_permission' ],
+			]
+		);
 	}
 
 	/**

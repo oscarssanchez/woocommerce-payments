@@ -10,7 +10,9 @@ import {
 	CardHeader,
 	FlexBlock,
 	FlexItem,
+	DropdownMenu,
 } from '@wordpress/components';
+import { moreVertical } from '@wordpress/icons';
 import { __ } from '@wordpress/i18n';
 
 /**
@@ -69,6 +71,11 @@ const AccountStatusDetails = ( props ) => {
 			<FlexItem className={ 'edit-details' }>
 				<Button isLink href={ accountStatus.accountLink }>
 					{ __( 'Edit details', 'woocommerce-payments' ) }
+				</Button>
+			</FlexItem>
+			<FlexItem className={ 'delete-account' }>
+				<Button isLink isDestructive href={ accountStatus.deletionLink }>
+					{ __( 'Delete account', 'woocommerce-payments' ) }
 				</Button>
 			</FlexItem>
 		</>

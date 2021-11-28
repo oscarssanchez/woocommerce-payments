@@ -163,6 +163,7 @@ class WC_Payments_Account {
 			'currentDeadline' => isset( $account['current_deadline'] ) ? $account['current_deadline'] : false,
 			'pastDue'         => isset( $account['has_overdue_requirements'] ) ? $account['has_overdue_requirements'] : false,
 			'accountLink'     => $this->get_login_url(),
+			'deletionLink'    => $this->get_delete_url(),
 		];
 	}
 
@@ -378,6 +379,14 @@ class WC_Payments_Account {
 			return;
 		}
 
+		if ( isset( $_GET['wcpay-delete'] ) && check_admin_referer( 'wcpay-delete' ) ) {
+			$deletion_response = $this->payments_api_client->delete_account();
+			if ( $deletion_response['deleted'] ) {
+				$this->redirect_to_onboarding_page();
+			}
+			return;
+		}
+
 		if (
 			isset( $_GET['wcpay-state'] )
 			&& isset( $_GET['wcpay-mode'] )
@@ -406,10 +415,19 @@ class WC_Payments_Account {
 	/**
 	 * Get Stripe connect url
 	 *
-	 * @return string Stripe account login url.
+	 * @return string Stripe account init url.
 	 */
 	public static function get_connect_url() {
 		return wp_nonce_url( add_query_arg( [ 'wcpay-connect' => '1' ] ), 'wcpay-connect' );
+	}
+
+	/**
+	 * Get Stripe delete url
+	 *
+	 * @return string Stripe account delete url.
+	 */
+	public static function get_delete_url() {
+		return wp_nonce_url( add_query_arg( [ 'wcpay-delete' => '1' ] ), 'wcpay-delete' );
 	}
 
 	/**

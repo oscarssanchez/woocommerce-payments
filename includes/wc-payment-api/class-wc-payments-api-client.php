@@ -951,7 +951,7 @@ class WC_Payments_API_Client {
 	/**
 	 * Get one-time dashboard login url
 	 *
-	 * @param string $redirect_url - URL to navigate back to from the dashboard.
+	 * @param string $redirect_url - URL to navigate back from the dashboard.
 	 *
 	 * @return array An array containing the url field
 	 */
@@ -966,6 +966,15 @@ class WC_Payments_API_Client {
 			true,
 			true
 		);
+	}
+
+	/**
+	 * Delete account.
+	 *
+	 * @return array An array containing the result
+	 */
+	public function delete_account() {
+		return $this->request( [], self::ACCOUNTS_API, self::DELETE, true, true );
 	}
 
 	/**
