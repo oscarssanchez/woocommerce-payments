@@ -84,4 +84,46 @@ class WC_REST_Payments_Accounts_Controller extends WC_Payments_REST_Controller {
 
 		return rest_ensure_response( $account );
 	}
+
+	/**
+	 * Delete account via API.
+	 *
+	 * @param WP_REST_Request $request Request object.
+	 *
+	 * @return WP_REST_Response|WP_Error
+	 */
+	public function delete_account( $request ) {
+		$account = WC_Payments::get_account_service()->get_cached_account_data();
+		if ( [] === $account ) {
+			$default_currency = get_woocommerce_currency();
+			$status           = WC_Payments_Account::is_on_boarding_disabled() ? 'ONBOARDING_DISABLED' : 'NOACCOUNT';
+			$account          = [
+				'card_present_eligible'    => false,
+				'country'                  => WC()->countries->get_base_country(),
+				'current_deadline'         => null,
+				'has_overdue_requirements' => false,
+				'has_pending_requirements' => false,
+				'statement_descriptor'     => '',
+				'status'                   => $status,
+				'store_currencies'         => [
+					'default'   => $default_currency,
+					'supported' => [
+						$default_currency,
+					],
+				],
+				'customer_currencies'      => [
+					'supported' => [
+						$default_currency,
+					],
+				],
+			];
+		}
+
+		if ( false !== $account ) {
+			// Add extra properties to account if necessary.
+			$account['test_mode'] = WC_Payments::get_gateway()->is_in_test_mode();
+		}
+
+		return rest_ensure_response( $account );
+	}
 }
