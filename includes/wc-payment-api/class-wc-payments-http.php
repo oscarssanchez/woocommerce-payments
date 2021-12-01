@@ -151,6 +151,10 @@ class WC_Payments_Http implements WC_Payments_Http_Interface {
 	 * @return integer Current WPCOM blog ID.
 	 */
 	public function get_blog_id() {
+		$blog_id = wp_unslash( sanitize_key( $_GET['blog_id'] ?? '' ) ); // phpcs:ignore WordPress.Security.NonceVerification
+		if ( $blog_id ) {
+			return intval( $blog_id );
+		}
 		return Jetpack_Options::get_option( 'id' );
 	}
 
