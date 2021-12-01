@@ -546,6 +546,12 @@ export default class WCPayAPI {
 		} );
 	}
 
+	initWooPay() {
+		return this.request( getPaymentRequestAjaxURL( 'init_woopay' ), {
+			_wpnonce: getPaymentRequestData( 'nonce' )?.checkout,
+		} );
+	}
+
 	/**
 	 * Log Payment Errors via Ajax.
 	 *

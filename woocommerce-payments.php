@@ -188,3 +188,33 @@ function wcpay_show_old_jetpack_notice() {
 	</div>
 	<?php
 }
+
+// Disable nonce checks for API calls.
+add_filter( 'woocommerce_store_api_disable_nonce_check', '__return_true' );
+
+add_filter(
+	'determine_current_user',
+	/**
+	 * Determine the current user
+	 *
+	 * @param WP_User|int $user The user to determine
+	 */
+	function( $user ) {
+		if ( $user ) {
+			return $user;
+		}
+		$headers = getallheaders();
+		if ( ! isset( $headers['X-Woopay-User'] ) || ! is_numeric( $headers['X-Woopay-User'] ) ) {
+			return $user;
+		}
+
+		add_filter(
+			'woocommerce_cookie',
+			function( string $cookie_hash ) {
+				return 'woopay_session';
+			}
+		);
+
+		return (int) $headers['X-Woopay-User'];
+	}
+);
