@@ -9,7 +9,6 @@ defined( 'ABSPATH' ) || exit;
 
 use WCPay\Exceptions\API_Exception;
 use WCPay\Exceptions\Amount_Too_Small_Exception;
-use WCPay\Constants\Payment_Method;
 use WCPay\Logger;
 use Automattic\WooCommerce\Admin\API\Reports\Customers\DataStore;
 
@@ -1466,18 +1465,8 @@ class WC_Payments_API_Client {
 		if ( $is_site_specific ) {
 			$url .= '/' . self::ENDPOINT_SITE_FRAGMENT;
 		}
-		if (
-			strstr( $api, 'payment_methods' )
-			|| strstr( $api, 'timeline' )
-			|| strstr( $api, 'intention' )
-			|| strstr( $api, 'charges' )
-			|| strstr( $api, 'customer' )
-			|| strstr( $api, 'transactions' )
-		) {
-			$url .= '/woopay/' . $api;
-		} else {
-			$url .= '/' . self::ENDPOINT_REST_BASE . '/' . $api;
-		}
+		$url .= '/' . self::ENDPOINT_REST_BASE . '/' . $api;
+		$url  = apply_filters( 'wc_payments_api_request_url', $url, $api );
 
 		$headers                 = [];
 		$headers['Content-Type'] = 'application/json; charset=utf-8';
