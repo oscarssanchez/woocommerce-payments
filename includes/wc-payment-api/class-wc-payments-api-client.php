@@ -1466,18 +1466,7 @@ class WC_Payments_API_Client {
 		if ( $is_site_specific ) {
 			$url .= '/' . self::ENDPOINT_SITE_FRAGMENT;
 		}
-		if (
-			strstr( $api, 'payment_methods' )
-			|| strstr( $api, 'timeline' )
-			|| strstr( $api, 'intention' )
-			|| strstr( $api, 'charges' )
-			|| strstr( $api, 'customer' )
-			|| strstr( $api, 'transactions' )
-		) {
-			$url .= '/woopay/' . $api;
-		} else {
-			$url .= '/' . self::ENDPOINT_REST_BASE . '/' . $api;
-		}
+		$url .= '/' . self::ENDPOINT_REST_BASE . '/' . $api;
 
 		$headers                 = [];
 		$headers['Content-Type'] = 'application/json; charset=utf-8';
