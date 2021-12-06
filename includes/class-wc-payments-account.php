@@ -19,12 +19,14 @@ use WCPay\Logger;
 class WC_Payments_Account {
 
 	// ACCOUNT_TRANSIENT is only used in the supporting dev tools plugin, it can be removed once everyone has upgraded.
-	const ACCOUNT_TRANSIENT              = 'wcpay_account_data';
-	const ACCOUNT_OPTION                 = 'wcpay_account_data';
-	const ACCOUNT_RETRIEVAL_ERROR        = 'ERROR';
-	const ON_BOARDING_DISABLED_TRANSIENT = 'wcpay_on_boarding_disabled';
-	const ON_BOARDING_STARTED_TRANSIENT  = 'wcpay_on_boarding_started';
-	const ERROR_MESSAGE_TRANSIENT        = 'wcpay_error_message';
+	const ACCOUNT_TRANSIENT                = 'wcpay_account_data';
+	const ACCOUNT_OPTION                   = 'wcpay_account_data';
+	const ACCOUNT_RETRIEVAL_ERROR          = 'ERROR';
+	const ON_BOARDING_DISABLED_TRANSIENT   = 'wcpay_on_boarding_disabled';
+	const ON_BOARDING_STARTED_TRANSIENT    = 'wcpay_on_boarding_started';
+	const ERROR_MESSAGE_TRANSIENT          = 'wcpay_error_message';
+	const ACCOUNT_CACHE_REFRESH_ACTION     = 'wcpay_refresh_account_cache';
+	const INSTANT_DEPOSITS_REMINDER_ACTION = 'wcpay_instant_deposit_reminder';
 
 	/**
 	 * Client for making requests to the WooCommerce Payments API
@@ -44,10 +46,10 @@ class WC_Payments_Account {
 		add_action( 'admin_init', [ $this, 'maybe_handle_onboarding' ] );
 		add_action( 'admin_init', [ $this, 'maybe_redirect_to_onboarding' ], 11 ); // Run this after the WC setup wizard and onboarding redirection logic.
 		add_action( 'woocommerce_payments_account_refreshed', [ $this, 'handle_instant_deposits_inbox_note' ] );
-		add_action( 'wcpay_instant_deposit_reminder', [ $this, 'handle_instant_deposits_inbox_reminder' ] );
+		add_action( self::INSTANT_DEPOSITS_REMINDER_ACTION, [ $this, 'handle_instant_deposits_inbox_reminder' ] );
+		add_action( self::ACCOUNT_CACHE_REFRESH_ACTION, [ $this, 'handle_account_cache_refresh' ] );
 		add_filter( 'allowed_redirect_hosts', [ $this, 'allowed_redirect_hosts' ] );
 		add_action( 'jetpack_site_registered', [ $this, 'clear_cache' ] );
-		add_filter( 'woocommerce_debug_tools', [ $this, 'debug_tool' ] );
 	}
 
 	/**
@@ -55,21 +57,6 @@ class WC_Payments_Account {
 	 */
 	public function clear_cache() {
 		delete_option( self::ACCOUNT_OPTION );
-	}
-
-	/**
-	 * Add clear account cache tool to WooCommerce debug tools.
-	 *
-	 * @param array $tools List of current available tools.
-	 */
-	public function debug_tool( $tools ) {
-		$tools['clear_wcpay_account_cache'] = [
-			'name'     => __( 'Clear WooCommerce Payments account cache', 'woocommerce-payments' ),
-			'button'   => __( 'Clear', 'woocommerce-payments' ),
-			'desc'     => __( 'This tool will clear the account cached values used in WooCommerce Payments.', 'woocommerce-payments' ),
-			'callback' => [ $this, 'refresh_account_data' ],
-		];
-		return $tools;
 	}
 
 	/**
@@ -190,6 +177,96 @@ class WC_Payments_Account {
 	}
 
 	/**
+	 * Gets the business name.
+	 *
+	 * @return string Business profile name.
+	 */
+	public function get_business_name() : string {
+		$account = $this->get_cached_account_data();
+		return isset( $account['business_profile']['name'] ) ? $account['business_profile']['name'] : '';
+	}
+
+	/**
+	 * Gets the business url.
+	 *
+	 * @return string Business profile url.
+	 */
+	public function get_business_url() : string {
+		$account = $this->get_cached_account_data();
+		return isset( $account['business_profile']['url'] ) ? $account['business_profile']['url'] : '';
+	}
+
+	/**
+	 * Gets the business support address.
+	 *
+	 * @return string Business profile support address.
+	 */
+	public function get_business_support_address() : array {
+		$account = $this->get_cached_account_data();
+		return isset( $account['business_profile']['support_address'] ) ? $account['business_profile']['support_address'] : [];
+	}
+
+	/**
+	 * Gets the business support email.
+	 *
+	 * @return string Business profile support email.
+	 */
+	public function get_business_support_email() : string {
+		$account = $this->get_cached_account_data();
+		return isset( $account['business_profile']['support_email'] ) ? $account['business_profile']['support_email'] : '';
+	}
+
+	/**
+	 * Gets the business support phone.
+	 *
+	 * @return string Business profile support phone.
+	 */
+	public function get_business_support_phone() : string {
+		$account = $this->get_cached_account_data();
+		return isset( $account['business_profile']['support_phone'] ) ? $account['business_profile']['support_phone'] : '';
+	}
+
+	/**
+	 * Gets the branding logo.
+	 *
+	 * @return string branding logo.
+	 */
+	public function get_branding_logo() : string {
+		$account = $this->get_cached_account_data();
+		return isset( $account['branding']['logo'] ) ? $account['branding']['logo'] : '';
+	}
+
+	/**
+	 * Gets the branding icon.
+	 *
+	 * @return string branding icon.
+	 */
+	public function get_branding_icon() : string {
+		$account = $this->get_cached_account_data();
+		return isset( $account['branding']['icon'] ) ? $account['branding']['icon'] : '';
+	}
+
+	/**
+	 * Gets the branding primary color.
+	 *
+	 * @return string branding primary color.
+	 */
+	public function get_branding_primary_color() : string {
+		$account = $this->get_cached_account_data();
+		return isset( $account['branding']['primary_color'] ) ? $account['branding']['primary_color'] : '';
+	}
+
+	/**
+	 * Gets the branding secondary color.
+	 *
+	 * @return string branding secondary color.
+	 */
+	public function get_branding_secondary_color() : string {
+		$account = $this->get_cached_account_data();
+		return isset( $account['branding']['secondary_color'] ) ? $account['branding']['secondary_color'] : '';
+	}
+
+	/**
 	 * Get card present eligible flag account
 	 *
 	 * @return bool
@@ -207,6 +284,16 @@ class WC_Payments_Account {
 	public function get_fees() {
 		$account = $this->get_cached_account_data();
 		return ! empty( $account ) && isset( $account['fees'] ) ? $account['fees'] : [];
+	}
+
+	/**
+	 * Gets the current account email for rendering on the settings page.
+	 *
+	 * @return string Email.
+	 */
+	public function get_account_email() {
+		$account = $this->get_cached_account_data();
+		return ! empty( $account ) && isset( $account['email'] ) ? $account['email'] : [];
 	}
 
 	/**
@@ -419,10 +506,13 @@ class WC_Payments_Account {
 	/**
 	 * Get Stripe connect url
 	 *
+	 * @see WC_Payments_Account::get_onboarding_return_url(). The $wcpay_connect_from param relies on this function returning the corresponding URL.
+	 * @param string $wcpay_connect_from Optional. A page ID representing where the user should be returned to after connecting. Default is '1' - redirects back to the WC Payments overview page.
+	 *
 	 * @return string Stripe account login url.
 	 */
-	public static function get_connect_url() {
-		return wp_nonce_url( add_query_arg( [ 'wcpay-connect' => '1' ] ), 'wcpay-connect' );
+	public static function get_connect_url( $wcpay_connect_from = '1' ) {
+		return wp_nonce_url( add_query_arg( [ 'wcpay-connect' => $wcpay_connect_from ], admin_url( 'admin.php' ) ), 'wcpay-connect' );
 	}
 
 	/**
@@ -537,11 +627,29 @@ class WC_Payments_Account {
 	 * @return string
 	 */
 	private function get_onboarding_return_url( $wcpay_connect_from ) {
+		$is_from_subscription_product_publish = preg_match(
+			'/WC_SUBSCRIPTIONS_PUBLISH_PRODUCT_(\d+)/',
+			$wcpay_connect_from,
+			$matches
+		);
+
+		if ( 1 === $is_from_subscription_product_publish ) {
+			return add_query_arg(
+				[ 'wcpay-subscriptions-onboarded' => '1' ],
+				get_edit_post_link( $matches[1], 'url' )
+			);
+		}
+
 		// If connection originated on the WCADMIN payment task page, return there.
 		// else goto the overview page, since now it is GA (earlier it was redirected to plugin settings page).
-		return 'WCADMIN_PAYMENT_TASK' === $wcpay_connect_from
-			? $this->get_payments_task_page_url()
-			: $this->get_overview_page_url();
+		switch ( $wcpay_connect_from ) {
+			case 'WCADMIN_PAYMENT_TASK':
+				return $this->get_payments_task_page_url();
+			case 'WC_SUBSCRIPTIONS_TABLE':
+				return admin_url( add_query_arg( [ 'post_type' => 'shop_subscription' ], 'edit.php' ) );
+			default:
+				return $this->get_overview_page_url();
+		}
 	}
 
 	/**
@@ -647,22 +755,27 @@ class WC_Payments_Account {
 	/**
 	 * Gets and caches the data for the account connected to this site.
 	 *
+	 * @param bool $force_refresh Forces data to be fetched from the server, rather than using the cache.
+	 *
 	 * @return array|bool Account data or false if failed to retrieve account data.
 	 */
-	public function get_cached_account_data() {
+	public function get_cached_account_data( bool $force_refresh = false ) {
 		if ( ! $this->payments_api_client->is_server_connected() ) {
 			return [];
 		}
 
-		$account = $this->read_account_from_cache();
+		// If we want to force a refresh, we can skip this logic and go straight to the server request.
+		if ( ! $force_refresh ) {
+			$account = $this->read_account_from_cache();
 
-		if ( $this->is_valid_cached_account( $account ) ) {
-			return $account;
-		}
+			if ( $this->is_valid_cached_account( $account ) ) {
+				return $account;
+			}
 
-		// If the option contains the error value, return false early and do not attempt another API call.
-		if ( self::ACCOUNT_RETRIEVAL_ERROR === $account ) {
-			return false;
+			// If the option contains the error value, return false early and do not attempt another API call.
+			if ( self::ACCOUNT_RETRIEVAL_ERROR === $account ) {
+				return false;
+			}
 		}
 
 		try {
@@ -706,9 +819,9 @@ class WC_Payments_Account {
 	 * @param int|null     $expiration - The length of time to cache the account data, expressed in seconds.
 	 */
 	private function cache_account( $account, int $expiration = null ) {
-		// Default expiration to 2 hours if not set.
+		// Default expiration to 2.5 hours if not set.
 		if ( null === $expiration ) {
-			$expiration = 2 * HOUR_IN_SECONDS;
+			$expiration = 2.5 * HOUR_IN_SECONDS;
 		}
 
 		// Add the account data and expiry time to the array we're caching.
@@ -722,6 +835,9 @@ class WC_Payments_Account {
 		} else {
 			$result = update_option( self::ACCOUNT_OPTION, $account_cache, 'no' );
 		}
+
+		// Schedule the account cache to be refreshed in 2 hours.
+		$this->schedule_account_cache_refresh();
 
 		return $result;
 	}
@@ -939,7 +1055,7 @@ class WC_Payments_Account {
 	 */
 	public function maybe_add_instant_deposit_note_reminder() {
 		$action_scheduler_service = new WC_Payments_Action_Scheduler_Service( $this->payments_api_client );
-		$action_hook              = 'wcpay_instant_deposit_reminder';
+		$action_hook              = self::INSTANT_DEPOSITS_REMINDER_ACTION;
 
 		if ( $action_scheduler_service->pending_action_exists( $action_hook ) ) {
 			return;
@@ -947,6 +1063,14 @@ class WC_Payments_Account {
 
 		$reminder_time = time() + ( 90 * DAY_IN_SECONDS );
 		$action_scheduler_service->schedule_job( $reminder_time, $action_hook );
+	}
+
+	/**
+	 * Handles action scheduler job to refresh the account cache. Will clear the cache, and
+	 * then fetch the account data from the server, also forcing it to be re-cached.
+	 */
+	public function handle_account_cache_refresh() {
+		$this->get_cached_account_data( true );
 	}
 
 	/**
@@ -984,5 +1108,18 @@ class WC_Payments_Account {
 
 		// We have fresh account data in the cache, so return it.
 		return $account_cache['account'];
+	}
+
+	/**
+	 * Schedule an ActionScheduler job to refresh the cached account data. When the account cache is
+	 * expired, we schedule a job to refresh the cache in 2 hours. The only time this function gets called is
+	 * when we are saving to the cache, so we always want to re-schedule the job even if it already exists.
+	 */
+	private function schedule_account_cache_refresh() {
+		$action_scheduler_service = new WC_Payments_Action_Scheduler_Service( $this->payments_api_client );
+		$action_hook              = self::ACCOUNT_CACHE_REFRESH_ACTION;
+
+		$action_time = time() + ( 2 * HOUR_IN_SECONDS );
+		$action_scheduler_service->schedule_job( $action_time, $action_hook );
 	}
 }

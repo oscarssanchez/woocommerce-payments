@@ -46,7 +46,10 @@ registerPaymentMethod( {
 	ariaLabel: __( 'WooCommerce Payments', 'woocommerce-payments' ),
 	supports: {
 		showSavedCards: getConfig( 'isSavedCardsEnabled' ) ?? false,
-		showSaveOption: getConfig( 'isSavedCardsEnabled' ) ?? false,
+		showSaveOption:
+			( getConfig( 'isSavedCardsEnabled' ) &&
+				! getConfig( 'cartContainsSubscription' ) ) ??
+			false,
 		features: getConfig( 'features' ),
 	},
 } );

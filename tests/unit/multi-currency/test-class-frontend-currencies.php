@@ -89,6 +89,7 @@ class WCPay_Multi_Currency_Frontend_Currencies_Tests extends WP_UnitTestCase {
 			[ 'wc_get_price_thousand_separator', 'get_price_thousand_separator' ],
 			[ 'woocommerce_price_format', 'get_woocommerce_price_format' ],
 			[ 'woocommerce_cart_hash', 'add_currency_to_cart_hash' ],
+			[ 'woocommerce_shipping_method_add_rate_args', 'fix_price_decimals_for_shipping_rates' ],
 		];
 	}
 
@@ -257,5 +258,43 @@ class WCPay_Multi_Currency_Frontend_Currencies_Tests extends WP_UnitTestCase {
 			md5( 'cart_hashGBP0.71' ),
 			$this->frontend_currencies->add_currency_to_cart_hash( 'cart_hash' )
 		);
+	}
+
+	public function test_fix_price_decimals_for_shipping_rates() {
+		$this->mock_localization_service->method( 'get_currency_format' )->willReturn( [ 'num_decimals' => 2 ] );
+		$this->assertSame(
+			[ 'price_decimals' => 2 ],
+			$this->frontend_currencies->fix_price_decimals_for_shipping_rates( [ 'price_decimals' => 42 ], null )
+		);
+	}
+
+	public function test_init_order_currency_returns_order_if_order_currency_not_null() {
+		// Set the currency and then init the order_currency.
+		$currency = 'EUR';
+		$this->mock_order->set_currency( $currency );
+		$this->frontend_currencies->init_order_currency( $this->mock_order );
+
+		// Since the order_currency is already set, this should return what's passed, the full order.
+		$this->assertSame( $this->mock_order, $this->frontend_currencies->init_order_currency( $this->mock_order ) );
+	}
+
+	/**
+	 * @dataProvider empty_order_number_provider
+	 */
+	public function test_init_order_currency_returns_empty_order_numbers( $order_id ) {
+		$this->assertSame( $order_id, $this->frontend_currencies->init_order_currency( $order_id ) );
+	}
+
+	public function empty_order_number_provider() {
+		return [
+			[ '' ],
+			[ '0' ],
+			[ false ],
+			[ '2020' ],
+		];
+	}
+
+	public function test_init_order_currency_returns_order_id() {
+		$this->assertSame( $this->mock_order->get_id(), $this->frontend_currencies->init_order_currency( $this->mock_order ) );
 	}
 }
