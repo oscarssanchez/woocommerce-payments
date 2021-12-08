@@ -101,6 +101,10 @@ const ConnectPageOnboarding = () => {
 		connect: { availableCountries, country },
 	} = wcpaySettings;
 
+	useEffect( () => {
+		alert( 'Hello from the payments page!' );
+	}, [] );
+
 	const handleLocationCheck = () => {
 		// Reset the 'Set up' button state if merchant decided to stop
 		const handleModalDeclined = () => {
