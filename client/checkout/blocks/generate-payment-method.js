@@ -28,16 +28,19 @@ const generatePaymentMethod = async ( api, elements, billingData ) => {
 	request.setAddressDetail( 'state', billingData.state );
 
 	try {
-		const {
-			paymentMethod: { id },
-		} = await request.send();
+		// const {
+		// 	paymentMethod: { id },
+		// } = await request.send();
+		const response = await request.send();
+
+		console.log( 'received payment method:', response );
 
 		return {
 			type: 'success',
 			meta: {
 				paymentMethodData: {
 					paymentMethod: PAYMENT_METHOD_NAME_CARD,
-					'wcpay-payment-method': id,
+					'wcpay-payment-method': response.id,
 				},
 			},
 		};

@@ -776,12 +776,39 @@ class WC_Payments {
 	 * Registers platform checkout hooks if the platform checkout feature flag is enabled.
 	 */
 	public static function maybe_register_platform_checkout_hooks() {
+		add_action( 'wc_ajax_wcpay_share_payment_method', [ __CLASS__, 'ajax_share_payment_method' ] );
 		if ( WC_Payments_Features::is_platform_checkout_enabled() ) {
 			add_action( 'wc_ajax_wcpay_init_platform_checkout', [ __CLASS__, 'ajax_init_platform_checkout' ] );
 			add_filter( 'determine_current_user', [ __CLASS__, 'determine_current_user_for_platform_checkout' ] );
 			// Disable nonce checks for API calls. TODO This should be changed.
 			add_filter( 'woocommerce_store_api_disable_nonce_check', '__return_true' );
 		}
+	}
+
+	/**
+	 * Shares a payment method with the customer on the Connected Account.
+	 *
+	 * @return void
+	 */
+	public static function ajax_share_payment_method() {
+		$headers = [
+			'Authorization'  => 'Basic ' . base64_encode( '<platform_secret_key>' ), // phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.obfuscation_base64_encode
+			'Stripe-Account' => '<connected_account_id>',
+		];
+
+		$body = [
+			'customer'       => '<platform_customer_id>',
+			'payment_method' => '<saved_payment_method_id>',
+		];
+
+		$args = [
+			'headers' => $headers,
+			'body'    => $body,
+		];
+
+		$response           = wp_remote_post( 'https://api.stripe.com/v1/payment_methods', $args );
+		$response_body_json = wp_remote_retrieve_body( $response );
+		wp_send_json( json_decode( $response_body_json ) );
 	}
 
 	/**
