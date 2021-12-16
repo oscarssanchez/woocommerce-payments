@@ -716,6 +716,16 @@ class WC_Payments_API_Client {
 	}
 
 	/**
+	 * Get summary of disputes.
+	 *
+	 * @return array
+	 * @throws API_Exception - Exception thrown on request failure.
+	 */
+	public function get_disputes_summary() {
+		return $this->request( [], self::DISPUTES_API . '/summary', self::GET );
+	}
+
+	/**
 	 * Fetch a single dispute with provided id.
 	 *
 	 * @param string $dispute_id id of requested dispute.

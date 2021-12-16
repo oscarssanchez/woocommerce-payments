@@ -34,6 +34,15 @@ class WC_REST_Payments_Disputes_Controller extends WC_Payments_REST_Controller {
 		);
 		register_rest_route(
 			$this->namespace,
+			'/' . $this->rest_base . '/summary',
+			[
+				'methods'             => WP_REST_Server::READABLE,
+				'callback'            => [ $this, 'get_disputes_summary' ],
+				'permission_callback' => [ $this, 'check_permission' ],
+			]
+		);
+		register_rest_route(
+			$this->namespace,
 			'/' . $this->rest_base . '/(?P<dispute_id>\w+)',
 			[
 				'methods'             => WP_REST_Server::READABLE,
@@ -77,6 +86,13 @@ class WC_REST_Payments_Disputes_Controller extends WC_Payments_REST_Controller {
 	 */
 	public function get_disputes() {
 		return $this->forward_request( 'list_disputes', [] );
+	}
+
+	/**
+	 * Retrieve transactions summary to respond with via API.
+	 */
+	public function get_disputes_summary() {
+		return $this->forward_request( 'get_disputes_summary', [] );
 	}
 
 	/**
