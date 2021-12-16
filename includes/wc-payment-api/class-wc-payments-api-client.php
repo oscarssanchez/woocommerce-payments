@@ -704,7 +704,7 @@ class WC_Payments_API_Client {
 			foreach ( $disputes['data'] as &$dispute ) {
 				try {
 					// Wrap with try/catch to avoid failing whole request because of a single dispute.
-					$dispute = $this->add_order_info_to_object( $dispute['charge']['id'], $dispute );
+					$dispute = $this->add_order_info_to_object( $dispute['charge_id'], $dispute );
 				} catch ( Exception $e ) {
 					// TODO: Log the error once Logger PR (#326) is merged.
 					continue;
