@@ -138,6 +138,11 @@ function observeConsoleLogging() {
 			return;
 		}
 
+		// CORS related error. Skip logging.
+		if ( text.includes( 'net::ERR_FAILED' ) ) {
+			return;
+		}
+
 		const logFunction = OBSERVED_CONSOLE_MESSAGE_TYPES[ type ];
 
 		// As of Puppeteer 1.6.1, `message.text()` wrongly returns an object of
