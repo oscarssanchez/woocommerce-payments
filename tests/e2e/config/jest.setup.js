@@ -66,6 +66,10 @@ function observeConsoleLogging() {
 
 		let text = message.text();
 
+		console.error( '--------------------------------------------------' );
+		console.warn( message );
+		console.error( '--------------------------------------------------' );
+
 		// An exception is made for _blanket_ deprecation warnings: Those
 		// which log regardless of whether a deprecated feature is in use.
 		if ( text.includes( 'This is a global warning' ) ) {
