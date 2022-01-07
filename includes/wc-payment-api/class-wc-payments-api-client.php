@@ -707,17 +707,22 @@ class WC_Payments_API_Client {
 	/**
 	 * List disputes
 	 *
-	 * @param  int $page The page index to retrieve.
-	 * @param  int $page_size The number of items the page contains.
+	 * @param  int   $page The page index to retrieve.
+	 * @param  int   $page_size The number of items the page contains.
+	 * @param  array $filters The filters to apply to query.
+
 	 * @return array
 	 * @throws API_Exception - Exception thrown on request failure.
 	 */
-	public function list_disputes( int $page = 0, int $page_size = 25 ):array {
-		$query = [
-			'limit'    => 100,
-			'page'     => $page,
-			'pagesize' => $page_size,
-		];
+	public function list_disputes( int $page = 0, int $page_size = 25, array $filters = [] ):array {
+		$query = array_merge(
+			$filters,
+			[
+				'limit'    => 100,
+				'pagesize' => $page_size,
+				'page'     => $page,
+			]
+		);
 
 		return $this->request( $query, self::DISPUTES_API, self::GET );
 	}
@@ -725,11 +730,13 @@ class WC_Payments_API_Client {
 	/**
 	 * Get summary of disputes.
 	 *
+	 * @param  array $filters The filters to apply to query.
+	 *
 	 * @return array
 	 * @throws API_Exception - Exception thrown on request failure.
 	 */
-	public function get_disputes_summary():array {
-		return $this->request( [], self::DISPUTES_API . '/summary', self::GET );
+	public function get_disputes_summary( array $filters = [] ): array {
+		return $this->request( $filters, self::DISPUTES_API . '/summary', self::GET );
 	}
 
 	/**

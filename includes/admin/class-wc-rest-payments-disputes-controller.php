@@ -86,10 +86,12 @@ class WC_REST_Payments_Disputes_Controller extends WC_Payments_REST_Controller {
 	 *
 	 * @param WP_REST_Request $request Full data about the request.
 	 */
-	public function get_disputes( WP_REST_Request $request ) {
+	public function get_disputes( $request ) {
 		$page      = (int) $request->get_param( 'page' );
 		$page_size = (int) $request->get_param( 'pagesize' );
-		return $this->forward_request( 'list_disputes', [ $page, $page_size ] );
+		$filters   = $this->get_disputes_filters( $request );
+
+		return $this->forward_request( 'list_disputes', [ $page, $page_size, $filters ] );
 	}
 
 	/**
@@ -99,7 +101,9 @@ class WC_REST_Payments_Disputes_Controller extends WC_Payments_REST_Controller {
 	 * @return WP_REST_Response|WP_Error
 	 */
 	public function get_disputes_summary( WP_REST_Request $request ) {
-		return $this->forward_request( 'get_disputes_summary', [] );
+		$filters = $this->get_disputes_filters( $request );
+
+		return $this->forward_request( 'get_disputes_summary', [ $filters ] );
 	}
 
 	/**
@@ -147,5 +151,27 @@ class WC_REST_Payments_Disputes_Controller extends WC_Payments_REST_Controller {
 	public function close_dispute( $request ) {
 		$dispute_id = $request->get_param( 'dispute_id' );
 		return $this->forward_request( 'close_dispute', [ $dispute_id ] );
+	}
+
+	/**
+	 * Extract deposits filters from request
+	 *
+	 * @param WP_REST_Request $request Full data about the request.
+	 */
+	private function get_disputes_filters( $request ) {
+		return array_filter(
+			[
+				'match'           => $request->get_param( 'match' ),
+				'currency_is'     => $request->get_param( 'currency_is' ),
+				'created_before'  => $request->get_param( 'created_before' ),
+				'created_after'   => $request->get_param( 'created_after' ),
+				'created_between' => $request->get_param( 'created_between' ),
+				'status_is'       => $request->get_param( 'status_is' ),
+				'status_is_not'   => $request->get_param( 'status_is_not' ),
+			],
+			static function ( $filter ) {
+				return null !== $filter;
+			}
+		);
 	}
 }
