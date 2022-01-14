@@ -38,8 +38,8 @@ const OBSERVED_CONSOLE_MESSAGE_TYPES = {
 	error: 'error',
 };
 
-const RESOURCE_TYPES_TO_BLOCK = [ 'image', 'font', 'media', 'other' ];
-const STYLESHEETS_TO_LOAD = [ /\/style.css/, /\/menu.css/, /chunk/, /blocks/ ];
+// const RESOURCE_TYPES_TO_BLOCK = [ 'image', 'font', 'media', 'other' ];
+// const STYLESHEETS_TO_LOAD = [ /\/style.css/, /\/menu.css/, /chunk/, /blocks/ ];
 
 async function setupBrowser() {
 	await setBrowserViewport( 'large' );
@@ -187,22 +187,22 @@ function setTestTimeouts() {
 	jest.setTimeout( TIMEOUT );
 }
 
-function blockAssets() {
-	page.setRequestInterception( true );
-	page.on( 'request', ( req ) => {
-		const resourceType = req.resourceType();
+// function blockAssets() {
+// 	page.setRequestInterception( true );
+// 	page.on( 'request', ( req ) => {
+// 		const resourceType = req.resourceType();
 
-		if (
-			RESOURCE_TYPES_TO_BLOCK.includes( resourceType ) ||
-			( 'stylesheet' === resourceType &&
-				! STYLESHEETS_TO_LOAD.some( ( s ) => s.test( req.url() ) ) )
-		) {
-			req.abort();
-		} else {
-			req.continue();
-		}
-	} );
-}
+// 		if (
+// 			RESOURCE_TYPES_TO_BLOCK.includes( resourceType ) ||
+// 			( 'stylesheet' === resourceType &&
+// 				! STYLESHEETS_TO_LOAD.some( ( s ) => s.test( req.url() ) ) )
+// 		) {
+// 			req.abort();
+// 		} else {
+// 			req.continue();
+// 		}
+// 	} );
+// }
 
 // Before every test suite run, delete all content created by the test. This ensures
 // other posts/comments/etc. aren't dirtying tests and tests don't depend on
@@ -212,7 +212,7 @@ beforeAll( async () => {
 	enablePageDialogAccept();
 	observeConsoleLogging();
 	setTestTimeouts();
-	blockAssets();
+	// blockAssets();
 	await setupBrowser();
 } );
 
