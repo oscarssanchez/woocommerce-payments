@@ -20,7 +20,7 @@ const cards = [
 ];
 
 // Unskip these after debugging failing shopper tests.
-describe.skip( 'Saved cards ', () => {
+describe( 'Saved cards ', () => {
 	describe.each( cards )(
 		'when using a %s card added through my account',
 		( cardType, card ) => {

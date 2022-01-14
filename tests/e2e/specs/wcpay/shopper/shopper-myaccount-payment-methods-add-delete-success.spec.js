@@ -17,7 +17,7 @@ const validCards = cards.filter( ( [ cardType ] ) =>
 );
 
 // Unskip this after debugging failing shopper tests.
-describe.skip( 'Payment Methods', () => {
+describe( 'Payment Methods', () => {
 	beforeAll( async () => {
 		await shopper.login();
 		await shopperWCP.goToPaymentMethods();
