@@ -413,6 +413,17 @@ class UPE_Payment_Gateway extends WC_Payment_Gateway_WCPay {
 		$save_payment_method       = $payment_type->equals( Payment_Type::RECURRING() ) || ! empty( $_POST[ 'wc-' . static::GATEWAY_ID . '-new-payment-method' ] ); // phpcs:ignore WordPress.Security.NonceVerification.Missing
 		$payment_country           = ! empty( $_POST['wcpay_payment_country'] ) ? wc_clean( wp_unslash( $_POST['wcpay_payment_country'] ) ) : null; // phpcs:ignore WordPress.Security.NonceVerification.Missing
 
+		$statement_descriptor                  = $this->get_account_statement_descriptor();
+		$short_statement_descriptor            = ! empty( $this->get_option( 'short_statement_descriptor' ) ) ? $this->get_option( 'short_statement_descriptor' ) : '';
+		$is_short_statement_descriptor_enabled = 'yes' === $this->get_option( 'is_short_statement_descriptor_enabled' );
+
+		if ( 'card' === $selected_upe_payment_type && $is_short_statement_descriptor_enabled && ! empty( $short_statement_descriptor ) ) {
+			// Use the shortened statement descriptor for card transactions only.
+			$descriptor = WC_Payments_Utils::get_shortened_statement_descriptor( $short_statement_descriptor, $order );
+		} elseif ( ! empty( $statement_descriptor ) ) {
+			$descriptor = WC_Payments_Utils::clean_statement_descriptor( $statement_descriptor );
+		}
+
 		if ( $payment_intent_id ) {
 			list( $user, $customer_id ) = $this->manage_customer_details_for_order( $order );
 
@@ -440,7 +451,8 @@ class UPE_Payment_Gateway extends WC_Payment_Gateway_WCPay {
 						$this->get_metadata_from_order( $order, $payment_type ),
 						$this->get_level3_data_from_order( $order ),
 						$selected_upe_payment_type,
-						$payment_country
+						$payment_country,
+						$descriptor
 					);
 				} catch ( Amount_Too_Small_Exception $e ) {
 					// This code would only be reached if the cache has already expired.

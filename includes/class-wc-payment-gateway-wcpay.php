@@ -1111,6 +1111,16 @@ class WC_Payment_Gateway_WCPay extends WC_Payment_Gateway_CC {
 			// phpcs:ignore WordPress.Security.NonceVerification.Missing
 			$platform_checkout_intent_id = sanitize_user( wp_unslash( $_POST['platform-checkout-intent'] ?? '' ), true );
 
+			$statement_descriptor                  = $this->get_account_statement_descriptor();
+			$short_statement_descriptor            = ! empty( $this->get_option( 'short_statement_descriptor' ) ) ? str_replace( "'", '', $this->get_option( 'short_statement_descriptor' ) ) : '';
+			$is_short_statement_descriptor_enabled = ! empty( $this->get_option( 'is_short_statement_descriptor_enabled' ) ) && 'yes' === $this->get_option( 'is_short_statement_descriptor_enabled' );
+			if ( in_array( $order->get_payment_method(), [ 'card', 'woocommerce_payments' ], true ) && $is_short_statement_descriptor_enabled && ! empty( $short_statement_descriptor ) ) {
+				// Use the shortened statement descriptor for card transactions only.
+				$descriptor = WC_Payments_Utils::get_shortened_statement_descriptor( $short_statement_descriptor, $order );
+			} elseif ( ! empty( $statement_descriptor ) ) {
+				$descriptor = WC_Payments_Utils::clean_statement_descriptor( $statement_descriptor );
+			}
+
 			if ( ! empty( $platform_checkout_intent_id ) ) {
 				// If the intent is included in the request use that intent.
 				$intent = $this->payments_api_client->get_intent( $platform_checkout_intent_id );
@@ -1128,7 +1138,8 @@ class WC_Payment_Gateway_WCPay extends WC_Payment_Gateway_CC {
 					$this->get_level3_data_from_order( $order ),
 					$payment_information->is_merchant_initiated(),
 					$additional_api_parameters,
-					$payment_methods
+					$payment_methods,
+					$descriptor
 				);
 			}
 
