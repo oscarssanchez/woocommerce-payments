@@ -183,6 +183,7 @@ class WC_Payments_API_Client {
 	 * @param bool   $off_session                     - Whether the payment is off-session (merchant-initiated), or on-session (customer-initiated).
 	 * @param array  $additional_parameters           - An array of any additional request parameters, particularly for additional payment methods.
 	 * @param array  $payment_methods                 - An array of payment methods that might be used for the payment.
+	 * @param string $statement_descriptor            - (optional) The statement to be sent to the financial institution.
 	 *
 	 * @return WC_Payments_API_Intention
 	 * @throws API_Exception - Exception thrown on intention creation failure.
@@ -199,7 +200,8 @@ class WC_Payments_API_Client {
 		$level3 = [],
 		$off_session = false,
 		$additional_parameters = [],
-		$payment_methods = null
+		$payment_methods = null,
+		$statement_descriptor = null
 	) {
 		// TODO: There's scope to have amount and currency bundled up into an object.
 		$request                   = [];
@@ -215,6 +217,10 @@ class WC_Payments_API_Client {
 
 		if ( ! empty( $payment_methods ) ) {
 			$request['payment_method_types'] = $payment_methods;
+		}
+
+		if ( ! empty( $statement_descriptor ) ) {
+			$request['statement_descriptor'] = $statement_descriptor;
 		}
 
 		$request = array_merge( $request, $additional_parameters );
@@ -279,6 +285,7 @@ class WC_Payments_API_Client {
 	 * @param array   $level3                    - Level 3 data.
 	 * @param string  $selected_upe_payment_type - The name of the selected UPE payment type or empty string.
 	 * @param ?string $payment_country           - The payment two-letter iso country code or null.
+	 * @param string  $statement_descriptor       - (optional) The statement to be sent to the financial institution.
 	 *
 	 * @return WC_Payments_API_Intention
 	 * @throws API_Exception - Exception thrown on intention creation failure.
@@ -292,7 +299,8 @@ class WC_Payments_API_Client {
 		$metadata = [],
 		$level3 = [],
 		$selected_upe_payment_type = '',
-		$payment_country = null
+		$payment_country = null,
+		$statement_descriptor = null
 	) {
 		$request = [
 			'amount'      => $amount,
@@ -315,6 +323,10 @@ class WC_Payments_API_Client {
 		}
 		if ( $save_payment_method ) {
 			$request['setup_future_usage'] = 'off_session';
+		}
+
+		if ( ! empty( $statement_descriptor ) ) {
+			$request['statement_descriptor'] = $statement_descriptor;
 		}
 
 		$response_array = $this->request_with_level3_data( $request, self::INTENTIONS_API . '/' . $intention_id, self::POST );
