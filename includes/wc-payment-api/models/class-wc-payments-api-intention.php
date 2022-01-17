@@ -105,6 +105,13 @@ class WC_Payments_API_Intention {
 	private $metadata;
 
 	/**
+	 * The statement descriptor of the intention.
+	 *
+	 * @var string|null
+	 */
+	private $statement_descriptor;
+
+	/**
 	 * WC_Payments_API_Intention constructor.
 	 *
 	 * @param string      $id                     - ID of the intention.
