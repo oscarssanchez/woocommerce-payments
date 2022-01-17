@@ -13,6 +13,7 @@ const {
  * Internal dependencies
  */
 import {
+	clearCardDetails,
 	fillCardDetails,
 	setupProductCheckout,
 	confirmCardAuthentication,
@@ -24,6 +25,11 @@ describe( 'Shopper > Checkout > Failures with various cards', () => {
 		await setupProductCheckout(
 			config.get( 'addresses.customer.billing' )
 		);
+	} );
+
+	afterEach( async () => {
+		// Clear card details for the next test
+		await clearCardDetails();
 	} );
 
 	afterAll( async () => {
