@@ -281,7 +281,7 @@ class WC_Payments_API_Intention {
 	/**
 	 * Returns the statement descriptor of this intention
 	 *
-	 * @return array
+	 * @return string|null
 	 */
 	public function get_statement_descriptor() {
 		return $this->statement_descriptor;
