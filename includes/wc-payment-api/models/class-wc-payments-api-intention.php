@@ -136,7 +136,7 @@ class WC_Payments_API_Intention {
 		$last_payment_error = [],
 		$payment_method_details = [],
 		$metadata = [],
-		$statement_descriptor
+		$statement_descriptor = null
 	) {
 		$this->id                     = $id;
 		$this->amount                 = $amount;
