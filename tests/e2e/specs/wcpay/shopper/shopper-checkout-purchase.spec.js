@@ -32,7 +32,8 @@ describe( 'Successful purchase', () => {
 		await expect( page ).toMatch( 'Order received' );
 	} );
 
-	it( 'using a 3DS card and account signup', async () => {
+	// eslint-disable-next-line jest/no-test-prefixes
+	xit( 'using a 3DS card and account signup', async () => {
 		await setupProductCheckout( {
 			...config.get( 'addresses.customer.billing' ),
 			...config.get( 'users.guest' ),
