@@ -3,7 +3,7 @@
  */
 import config from 'config';
 
-const { shopper } = require( '@woocommerce/e2e-utils' );
+const { shopper, createSimpleProduct } = require( '@woocommerce/e2e-utils' );
 
 /**
  * Internal dependencies
@@ -13,6 +13,7 @@ import { shopperWCP, takeScreenshot } from '../../../utils';
 
 import {
 	fillCardDetails,
+	clearCardDetails,
 	setupProductCheckout,
 	confirmCardAuthentication,
 } from '../../../utils/payments';
@@ -20,12 +21,22 @@ import {
 describe( 'Successful purchase', () => {
 	beforeAll( async () => {
 		await page.goto( config.get( 'url' ), { waitUntil: 'networkidle0' } );
-	} );
-
-	it( 'using a basic card', async () => {
+		await createSimpleProduct();
 		await setupProductCheckout(
 			config.get( 'addresses.customer.billing' )
 		);
+	} );
+
+	afterEach( async () => {
+		// Clear card details for the next test
+		await clearCardDetails();
+	} );
+
+	afterAll( async () => {
+		await shopperWCP.logout();
+	} );
+
+	it( 'using a basic card', async () => {
 		const card = config.get( 'cards.basic' );
 		await fillCardDetails( page, card );
 		await shopper.placeOrder();
