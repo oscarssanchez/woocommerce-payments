@@ -4,6 +4,7 @@
 import config from 'config';
 
 const {
+	shopper,
 	createSimpleProduct,
 	uiUnblocked,
 } = require( '@woocommerce/e2e-utils' );
@@ -13,12 +14,9 @@ const {
  */
 import {
 	fillCardDetails,
-	clearCardDetails,
 	setupProductCheckout,
 	confirmCardAuthentication,
 } from '../../../utils/payments';
-
-import { shopperWCP } from '../../../utils';
 
 describe( 'Shopper > Checkout > Failures with various cards', () => {
 	beforeAll( async () => {
@@ -28,14 +26,9 @@ describe( 'Shopper > Checkout > Failures with various cards', () => {
 		);
 	} );
 
-	afterEach( async () => {
-		// Clear card details for the next test
-		await clearCardDetails();
-	} );
-
 	afterAll( async () => {
 		// Clear the cart at the end so it's ready for another test
-		await shopperWCP.logout();
+		await shopper.emptyCart();
 	} );
 
 	it( 'should throw an error that the card was simply declined', async () => {

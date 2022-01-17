@@ -13,7 +13,6 @@ import { shopperWCP, takeScreenshot } from '../../../utils';
 
 import {
 	fillCardDetails,
-	clearCardDetails,
 	setupProductCheckout,
 	confirmCardAuthentication,
 } from '../../../utils/payments';
@@ -27,13 +26,9 @@ describe( 'Successful purchase', () => {
 		);
 	} );
 
-	afterEach( async () => {
-		// Clear card details for the next test
-		await clearCardDetails();
-	} );
-
 	afterAll( async () => {
-		await shopperWCP.logout();
+		// Clear the cart at the end so it's ready for another test
+		await shopper.emptyCart();
 	} );
 
 	it( 'using a basic card', async () => {
