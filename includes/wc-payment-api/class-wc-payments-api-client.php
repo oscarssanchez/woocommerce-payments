@@ -1990,7 +1990,8 @@ class WC_Payments_API_Client {
 			$next_action,
 			$last_payment_error,
 			$charge ? $charge['payment_method_details'] : null,
-			$metadata
+			$metadata,
+			$intention_array['statement_descriptor'] ?? null
 		);
 
 		return $intent;

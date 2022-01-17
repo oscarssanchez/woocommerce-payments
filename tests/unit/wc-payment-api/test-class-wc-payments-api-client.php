@@ -913,6 +913,7 @@ class WC_Payments_API_Client_Test extends WP_UnitTestCase {
 		$selected_payment_method = 'giropay';
 		$payment_country         = 'US';
 		$save_payment_method     = true;
+		$statement_descriptor    = 'wootesting';
 		$metadata                = [
 			'customer_name'  => 'Testy Testerson',
 			'customer_email' => 'test@test.com',
@@ -966,6 +967,7 @@ class WC_Payments_API_Client_Test extends WP_UnitTestCase {
 						'payment_country'      => 'US',
 						'customer'             => $customer_id,
 						'setup_future_usage'   => 'off_session',
+						'statement_descriptor' => $statement_descriptor,
 					]
 				),
 				true,
@@ -1005,11 +1007,13 @@ class WC_Payments_API_Client_Test extends WP_UnitTestCase {
 			$metadata,
 			$level3_data,
 			$selected_payment_method,
-			$payment_country
+			$payment_country,
+			$statement_descriptor
 		);
 
 		$this->assertEquals( $expected_amount, $result->get_amount() );
 		$this->assertEquals( $expected_status, $result->get_status() );
+		$this->assertEquals( $statement_descriptor, $result->get_statement_descriptor() );
 	}
 
 	/**

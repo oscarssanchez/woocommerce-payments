@@ -120,6 +120,7 @@ class WC_Payments_API_Intention {
 	 * @param array       $last_payment_error     - An array containing details of any errors.
 	 * @param array       $payment_method_details - An array containing payment method details of associated charge.
 	 * @param array       $metadata               - An array containing additional metadata of associated charge or order.
+	 * @param string|null $statement_descriptor   - Bank statement of the intention.
 	 */
 	public function __construct(
 		$id,
@@ -134,7 +135,8 @@ class WC_Payments_API_Intention {
 		$next_action = [],
 		$last_payment_error = [],
 		$payment_method_details = [],
-		$metadata = []
+		$metadata = [],
+		$statement_descriptor
 	) {
 		$this->id                     = $id;
 		$this->amount                 = $amount;
@@ -149,6 +151,7 @@ class WC_Payments_API_Intention {
 		$this->payment_method_id      = $payment_method_id;
 		$this->payment_method_details = $payment_method_details;
 		$this->metadata               = $metadata;
+		$this->statement_descriptor   = $statement_descriptor;
 	}
 
 	/**
@@ -266,5 +269,14 @@ class WC_Payments_API_Intention {
 	 */
 	public function get_metadata() {
 		return $this->metadata;
+	}
+
+	/**
+	 * Returns the statement descriptor of this intention
+	 *
+	 * @return array
+	 */
+	public function get_statement_descriptor() {
+		return $this->statement_descriptor;
 	}
 }
