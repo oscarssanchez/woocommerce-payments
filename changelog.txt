@@ -1,6 +1,6 @@
 *** WooCommerce Payments Changelog ***
 
-= 3.7.0 - xxxx-xx-xx =
+= 3.7.0 - 2022-xx-xx =
 * Add - i know, add me too
 * Fix - Currency name not translated the Overview card title.
 
