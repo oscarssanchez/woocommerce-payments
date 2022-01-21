@@ -98,4 +98,7 @@ Please note that our support for the checkout block is still experimental and th
 
 == Changelog ==
 
+= 3.7.0 - 2022-xx-xx =
+* Add - add me
+
 [See changelog for all versions](https://raw.githubusercontent.com/Automattic/woocommerce-payments/trunk/changelog.txt).
