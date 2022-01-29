@@ -777,7 +777,6 @@ class WC_Payments {
 	 */
 	public static function maybe_register_platform_checkout_hooks() {
 		if ( WC_Payments_Features::is_platform_checkout_enabled() ) {
-			add_action( 'wc_ajax_wcpay_clone_payment_method', [ __CLASS__, 'ajax_clone_payment_method' ] );
 			add_filter( 'wc_payments_display_save_payment_method_checkbox', '__return_false' );
 
 			add_action( 'wc_ajax_wcpay_init_platform_checkout', [ __CLASS__, 'ajax_init_platform_checkout' ] );
@@ -785,20 +784,6 @@ class WC_Payments {
 			// Disable nonce checks for API calls. TODO This should be changed.
 			add_filter( 'woocommerce_store_api_disable_nonce_check', '__return_true' );
 		}
-	}
-
-	/**
-	 * Clones payment method to Stripe connected Account.
-	 *
-	 * @return void
-	 */
-	public static function ajax_clone_payment_method() {
-		if ( ! isset( $_POST['payment_method'], $_POST['email'] ) ) { // // phpcs:ignore WordPress.Security.NonceVerification.Missing
-			return;
-		}
-
-		$response = self::$api_client->clone_payment_method( $_POST['payment_method'], $_POST['email'] ); // phpcs:ignore
-		wp_send_json( $response );
 	}
 
 	/**
