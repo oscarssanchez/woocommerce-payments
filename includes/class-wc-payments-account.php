@@ -116,6 +116,34 @@ class WC_Payments_Account {
 	}
 
 	/**
+	 * Checks if the account is connected, throws on server error.
+	 *
+	 * @return bool      True if the account is connected, false otherwise.
+	 * @throws Exception Throws exception when unable to detect connection status.
+	 */
+	public function try_is_stripe_connected(): bool {
+		$account = $this->get_cached_account_data();
+		if ( false === $account ) {
+			throw new Exception( __( 'Failed to detect connection status', 'woocommerce-payments' ) );
+		}
+
+		return $this->is_account_onboarded();
+	}
+
+	/**
+	 * Checks if the account has finished onboarding.
+	 *
+	 * @return bool True if the account is onboarded, false otherwise.
+	 */
+	public function is_account_onboarded() {
+		$account = $this->get_cached_account_data();
+
+		// The empty array indicates that account is not connected yet.
+		// If non-empty account has no status, can assume already onboarded for legacy reasons.
+		return ! empty( $account ) && ( $account['status'] ?? null ) !== 'onboarding';
+	}
+
+	/**
 	 * Checks if the account has been rejected, assumes the value of $on_error on server error.
 	 *
 	 * @param bool $on_error Value to return on server error, defaults to false.
@@ -135,22 +163,6 @@ class WC_Payments_Account {
 		} catch ( Exception $e ) {
 			return $on_error;
 		}
-	}
-
-	/**
-	 * Checks if the account is connected, throws on server error.
-	 *
-	 * @return bool      True if the account is connected, false otherwise.
-	 * @throws Exception Throws exception when unable to detect connection status.
-	 */
-	public function try_is_stripe_connected(): bool {
-		$account = $this->get_cached_account_data();
-		if ( false === $account ) {
-			throw new Exception( __( 'Failed to detect connection status', 'woocommerce-payments' ) );
-		}
-
-		// The empty array indicates that account is not connected yet.
-		return [] !== $account;
 	}
 
 	/**
