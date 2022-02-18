@@ -39,6 +39,12 @@ class Platform_Checkout_Tracker extends Tracking {
 		parent::__construct( self::$prefix, $http );
 		add_action( 'wp_ajax_nopriv_jetpack_tracks', [ $this, 'ajax_tracks' ] );
 		add_action( 'wp_enqueue_scripts', [ $this, 'maybe_enqueue_tracks_scripts' ] );
+
+		// Actions that should result in recorded Tracks events.
+		add_action( 'woocommerce_after_checkout_form', [ $this, 'checkout_start' ] );
+		add_action( 'woocommerce_blocks_checkout_enqueue_data', [ $this, 'checkout_start' ] );
+		add_action( 'woocommerce_checkout_order_processed', [ $this, 'checkout_order_processed' ] );
+		add_action( 'woocommerce_blocks_checkout_order_processed', [ $this, 'checkout_order_processed' ] );
 	}
 
 	/**
@@ -152,6 +158,25 @@ class Platform_Checkout_Tracker extends Tracking {
 	public function track_add_to_cart() {
 		$data = [];
 		$this->record_event( 'order_checkout_start', $data );
+	}
+
+	/**
+	 * Record a Tracks event that the checkout has started.
+	 */
+	public function checkout_start() {
+		$this->record_event( 'order_checkout_start' );
+	}
+
+	/**
+	 * Record a Tracks event that the order has been processed.
+	 */
+	public function checkout_order_processed() {
+		$this->record_event(
+			'order_checkout_complete',
+			[
+				'source' => isset( $_SERVER['HTTP_X_WCPAY_PLATFORM_CHECKOUT_USER'] ) ? 'platform' : 'standard',
+			]
+		);
 	}
 
 }
