@@ -15,6 +15,7 @@ import { STORE_NAME } from '../constants';
 export interface Transaction {
 	amount: number;
 	order: {
+		billing_name?: string;
 		subscriptions?: { number: number; url: string }[];
 		url?: string;
 		customer_url?: string;

@@ -248,11 +248,12 @@ export const TransactionsList = (
 				  ] )
 				: [];
 		const riskLevel = <RiskLevel risk={ txn.risk_level } />;
-
 		const customerName =
 			txn.order && txn.order.customer_url ? (
 				<Link href={ txn.order.customer_url ?? '' }>
-					{ txn.customer_name }
+					{ txn.source === 'link'
+						? txn.order.billing_name
+						: txn.customer_name }
 				</Link>
 			) : (
 				txn.customer_name
@@ -338,15 +339,18 @@ export const TransactionsList = (
 			},
 			source: {
 				value: txn.source,
-				display: ! isFinancingType ? (
-					clickable(
-						<span
-							className={ `payment-method__brand payment-method__brand--${ txn.source }` }
-						/>
-					)
-				) : (
-					<span className={ 'payment-method__brand' }>—</span>
-				),
+				display:
+					! isFinancingType && txn.source !== 'link' ? (
+						clickable(
+							<span
+								className={ `payment-method__brand payment-method__brand--${ txn.source }` }
+							/>
+						)
+					) : (
+						<span className={ 'payment-method__brand' }>
+							{ txn.source === 'link' ? 'link' : '-' }
+						</span>
+					),
 			},
 			order: {
 				value: txn.order && txn.order.number,

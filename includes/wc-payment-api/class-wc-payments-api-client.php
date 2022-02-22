@@ -1851,6 +1851,7 @@ class WC_Payments_API_Client {
 			'number'       => $order->get_order_number(),
 			'url'          => $order->get_edit_order_url(),
 			'customer_url' => $this->get_customer_url( $order ),
+			'billing_name' => $order->get_billing_first_name() . ' ' . $order->get_billing_last_name(),
 		];
 
 		if ( function_exists( 'wcs_get_subscriptions_for_order' ) ) {
