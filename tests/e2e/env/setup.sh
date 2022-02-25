@@ -131,8 +131,13 @@ cli wp core install \
 	--admin_email="${WP_ADMIN_EMAIL-admin@example.com}" \
 	--skip-email
 
-echo "Updating WordPress to the latest version..."
-cli wp core update --quiet
+if [[ -n "$E2E_WP_VERSION" && "$E2E_WP_VERSION" != "latest" ]]; then
+	echo "Installing specified WordPress version..."
+	cli wp core update --version="$E2E_WP_VERSION" --force --quiet
+else
+	echo "Updating WordPress to the latest version..."
+	cli wp core update --quiet
+fi
 
 echo "Updating the WordPress database..."
 cli wp core update-db --quiet
