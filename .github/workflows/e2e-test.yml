@@ -54,13 +54,13 @@ jobs:
       E2E_BRANCH: ${{ matrix.test_branches }}
 
     steps:
-      # Set conditional ENV Variables
-      - name: Set conditional variables
+      # Conditionally skip plugin tests
+      - name: Conditionally skip plugin tests
         if: ${{ matrix.woocommerce == '4.8.0' }}
-        run: echo "Conditional environment variables set."
-        env:
-          SKIP_WC_BLOCKS_TESTS: 1
-          SKIP_WC_SUBSCRIPTIONS_TESTS: 1
+        run: |
+          echo "SKIP_WC_BLOCKS_TESTS=1" >> $GITHUB_ENV
+          echo "SKIP_WC_SUBSCRIPTIONS_TESTS=1" >> $GITHUB_ENV
+          echo "SKIP_WC_ACTION_SCHEDULER_TESTS=1" >> $GITHUB_ENV
 
       # Log workflow configuration
       - name: Workflow Configuration
