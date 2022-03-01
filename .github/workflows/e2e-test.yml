@@ -44,8 +44,6 @@ jobs:
         exclude:
           - test_groups: 'blocks'
             test_branches: 'merchant'
-          - woocommerce: '4.8.0'
-            test_groups: 'blocks'
 
     name: WC - ${{ matrix.woocommerce }} | ${{ matrix.test_groups }} - ${{ matrix.test_branches }}
 
@@ -59,9 +57,9 @@ jobs:
       # Set conditional ENV Variables
       - name: Set conditional variables
         if: ${{ matrix.woocommerce == '4.8.0' }}
-        run: |
-          echo "SKIP_WC_BLOCKS_TESTS=1" >> $GITHUB_ENV
-          echo "SKIP_WC_SUBSCRIPTIONS_TESTS=1" >> $GITHUB_ENV
+        env:
+          SKIP_WC_BLOCKS_TESTS: 1
+          SKIP_WC_SUBSCRIPTIONS_TESTS: 1
 
       # Log workflow configuration
       - name: Workflow Configuration
