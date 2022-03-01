@@ -148,6 +148,10 @@ fi
 echo "Updating the WordPress database..."
 cli wp core update-db --quiet
 
+if [[ "$DEBUG" != true ]]; then
+	cli wp config set WP_DEBUG false --raw
+fi
+
 echo "Updating permalink structure"
 cli wp rewrite structure '/%postname%/'
 
