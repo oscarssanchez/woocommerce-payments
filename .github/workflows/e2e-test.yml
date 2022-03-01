@@ -57,10 +57,10 @@ jobs:
       # Set conditional ENV Variables
       - name: Set conditional variables
         if: ${{ matrix.woocommerce == '4.8.0' }}
+        run: echo "Conditional environment variables set."
         env:
           SKIP_WC_BLOCKS_TESTS: 1
           SKIP_WC_SUBSCRIPTIONS_TESTS: 1
-        run: echo "Conditional environment variables set."
 
       # Log workflow configuration
       - name: Workflow Configuration
