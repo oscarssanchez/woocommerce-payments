@@ -54,10 +54,11 @@ jobs:
       E2E_BRANCH: ${{ matrix.test_branches }}
 
     steps:
-      # Conditionally skip workflow. Remove/update when min supported WC version is updated
+      # Conditionally skip workflow. Remove/update based on min supported WC version.
       - name: Conditionally skip workflow
         run: |
           if [[ $E2E_WC_VERSION == '4.8.0' ]]; then
+            echo "SKIP_WC_BLOCKS_TESTS=1" >> $GITHUB_ENV
             if [[
                 $E2E_GROUP == 'wcpay' && $E2E_BRANCH == 'merchant' ||
                 $E2E_GROUP == 'blocks'
@@ -152,11 +153,13 @@ jobs:
         run: npm run test:e2e
 
       # Archive screenshots if any
-      - name: Archive e2e test screenshots
+      - name: Archive e2e test screenshots & logs
         if: ${{ always() }}
         uses: actions/upload-artifact@v2
         with:
             name: e2e-screenshots
-            path: tests/e2e/screenshots
+            path: |
+              tests/e2e/screenshots
+              tests/e2e/docker/wp-content/debug.log
             if-no-files-found: ignore
             retention-days: 5
