@@ -53,8 +53,6 @@ jobs:
       E2E_GROUP:  ${{ matrix.test_groups }}
       E2E_BRANCH: ${{ matrix.test_branches }}
 
-    if: ${{ matrix.woocommerce != '4.8.0' && matrix.test_groups != 'wcpay' && matrix.test_branches != 'merchant' }}
-
     steps:
       # Conditionally skip plugin tests. Remove/update when min supported WC version is updated
       - name: Conditionally skip plugin tests
