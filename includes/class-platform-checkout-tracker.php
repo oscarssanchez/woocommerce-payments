@@ -33,6 +33,13 @@ class Platform_Checkout_Tracker extends Jetpack_Tracks_Client {
 	 */
 	private $http;
 
+	/**
+	 * Array of events to record.
+	 *
+	 * @var array $events
+	 */
+	protected $events = [];
+
 
 	/**
 	 * Constructor.
@@ -45,6 +52,8 @@ class Platform_Checkout_Tracker extends Jetpack_Tracks_Client {
 
 		add_action( 'wp_ajax_platform_tracks', [ $this, 'ajax_tracks' ] );
 		add_action( 'wp_ajax_nopriv_platform_tracks', [ $this, 'ajax_tracks' ] );
+		add_action( 'wp_footer', [ $this, 'render_tracking_pixels' ] );
+		add_action( 'shutdown', [ $this, 'send_tracks_requests' ] );
 
 		// Actions that should result in recorded Tracks events.
 		add_action( 'woocommerce_after_checkout_form', [ $this, 'checkout_start' ] );
@@ -176,7 +185,38 @@ class Platform_Checkout_Tracker extends Jetpack_Tracks_Client {
 			return new WP_Error( 'invalid_pixel', 'cannot generate tracks pixel for given input', 400 );
 		}
 
-		return self::record_pixel( $pixel );
+		$this->events[] = $pixel;
+	}
+
+	/**
+	 * Add events as tracking pixels to page footer.
+	 */
+	public function render_tracking_pixels() {
+		if ( empty( $this->events ) ) {
+			return;
+		}
+
+		foreach ( $this->events as $event ) {
+			$event .= '&_rt=' . self::build_timestamp() . '&_=_';
+			echo '<img style="position: fixed;" src="' . esc_url( $event ) . '" />';
+		}
+
+		$this->events = [];
+	}
+
+	/**
+	 * Make requests for any tracking events that weren't recorded in footer.
+	 */
+	public function send_tracks_requests() {
+		if ( empty( $this->events ) ) {
+			return;
+		}
+
+		foreach ( $this->events as $event ) {
+			self::record_pixel( $event );
+		}
+
+		$this->events = [];
 	}
 
 	/**
