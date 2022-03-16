@@ -259,8 +259,6 @@ class WC_REST_Payments_Settings_Controller extends WC_Payments_REST_Controller {
 	/**
 	 * Validate the statement descriptor argument.
 	 *
-	 * @since 4.7.0
-	 *
 	 * @param string          $value The value being validated.
 	 * @param WP_REST_Request $request The request made.
 	 * @param string          $param The parameter name, used in error messages.
