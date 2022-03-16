@@ -183,7 +183,7 @@ class WC_Payments_API_Client {
 	 * @param bool   $off_session                     - Whether the payment is off-session (merchant-initiated), or on-session (customer-initiated).
 	 * @param array  $additional_parameters           - An array of any additional request parameters, particularly for additional payment methods.
 	 * @param array  $payment_methods                 - An array of payment methods that might be used for the payment.
-	 * @param string $statement_descriptor            - (optional) The statement to be sent to the financial institution.
+	 * @param string $statement_descriptor            - The statement to be sent to the financial institution.
 	 *
 	 * @return WC_Payments_API_Intention
 	 * @throws API_Exception - Exception thrown on intention creation failure.
@@ -276,16 +276,16 @@ class WC_Payments_API_Client {
 	/**
 	 * Updates an intention, without confirming it.
 	 *
-	 * @param string  $intention_id              - The ID of the intention to update.
-	 * @param int     $amount                    - Amount to charge.
-	 * @param string  $currency_code             - Currency to charge in.
-	 * @param bool    $save_payment_method       - Whether to setup payment intent for future usage.
-	 * @param string  $customer_id               - Stripe customer to associate payment intent with.
-	 * @param array   $metadata                  - Meta data values to be sent along with payment intent creation.
-	 * @param array   $level3                    - Level 3 data.
-	 * @param string  $selected_upe_payment_type - The name of the selected UPE payment type or empty string.
-	 * @param ?string $payment_country           - The payment two-letter iso country code or null.
-	 * @param string  $statement_descriptor       - (optional) The statement to be sent to the financial institution.
+	 * @param string      $intention_id              - The ID of the intention to update.
+	 * @param int         $amount                    - Amount to charge.
+	 * @param string      $currency_code             - Currency to charge in.
+	 * @param bool        $save_payment_method       - Whether to setup payment intent for future usage.
+	 * @param string      $customer_id               - Stripe customer to associate payment intent with.
+	 * @param array       $metadata                  - Meta data values to be sent along with payment intent creation.
+	 * @param array       $level3                    - Level 3 data.
+	 * @param string      $selected_upe_payment_type - The name of the selected UPE payment type or empty string.
+	 * @param ?string     $payment_country           - The payment two-letter iso country code or null.
+	 * @param string|null $statement_descriptor       - The statement to be sent to the financial institution.
 	 *
 	 * @return WC_Payments_API_Intention
 	 * @throws API_Exception - Exception thrown on intention creation failure.
