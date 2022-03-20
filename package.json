@@ -63,7 +63,7 @@
   },
   "dependencies": {
     "@stripe/react-stripe-js": "1.4.1",
-    "@stripe/stripe-js": "1.15.1",
+    "@stripe/stripe-js": "1.25.0",
     "@woocommerce/admin-e2e-tests": "^0.1.2",
     "@woocommerce/explat": "^1.0.1",
     "debug": "^4.1.1",
