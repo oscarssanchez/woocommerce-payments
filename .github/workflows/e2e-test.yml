@@ -36,7 +36,7 @@ jobs:
       fail-fast:     false
       matrix:
         # Min WooCommerce | L-2 | L(atest) | beta
-        woocommerce:   [ '4.8.0', '6.0.0', '6.2.1', 'beta' ]
+        woocommerce:   [ '4.8.0' ]
         wordpress:     [ 'latest' ]
         php:           [ '7.4' ]
         test_groups:   [ 'subscriptions' ]
