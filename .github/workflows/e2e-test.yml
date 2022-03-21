@@ -39,8 +39,8 @@ jobs:
         woocommerce:   [ '4.8.0', '6.0.0', '6.2.1', 'beta' ]
         wordpress:     [ 'latest' ]
         php:           [ '7.4' ]
-        test_groups:   [ 'wcpay', 'subscriptions', 'blocks' ]
-        test_branches: [ 'merchant', 'shopper' ]
+        test_groups:   [ 'subscriptions' ]
+        test_branches: [ 'merchant' ]
         exclude:
           - test_groups: 'blocks'
             test_branches: 'merchant'
