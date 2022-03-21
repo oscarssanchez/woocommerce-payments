@@ -150,7 +150,7 @@ jobs:
       # Run Tests
       - name: Run E2E Tests
         if: ${{ ! env.SKIP_E2E_WORKFLOW }}
-        run: npm run test:e2e
+        run: npm run test:e2e tests/e2e/specs/subscriptions/merchant/merchant-subscriptions-purchase-no-sign-up.spec.js
 
       # Archive screenshots if any
       - name: Archive e2e test screenshots & logs
