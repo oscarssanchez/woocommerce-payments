@@ -347,6 +347,32 @@ class WC_Payments {
 
 		add_action( 'rest_api_init', [ __CLASS__, 'init_rest_api' ] );
 		add_action( 'woocommerce_woocommerce_payments_updated', [ __CLASS__, 'set_plugin_activation_timestamp' ] );
+
+		// Init Emails. TODO check if this is the right place to do it.
+		add_filter( 'woocommerce_email_classes', [ __CLASS__, 'add_emails' ], 11 );
+		add_filter( 'woocommerce_email_actions', [ __CLASS__, 'add_email_actions' ], 11 );
+	}
+
+	/**
+	 * Function add_emails
+	 *
+	 * @param  mixed $email_classes the email classes.
+	 * @return array
+	 */
+	public static function add_emails( $email_classes ) {
+		$email_classes['WC_Payments_Email_New_Receipt'] = include __DIR__ . '/emails/class-wc-payments-email-new-receipt.php';
+		return $email_classes;
+	}
+
+	/**
+	 * Function add_email_actions
+	 *
+	 * @param  mixed $email_actions the email actions.
+	 * @return array
+	 */
+	public static function add_email_actions( $email_actions ) {
+		$email_actions[] = 'woocommerce_payments_new_receipt';
+		return $email_actions;
 	}
 
 	/**

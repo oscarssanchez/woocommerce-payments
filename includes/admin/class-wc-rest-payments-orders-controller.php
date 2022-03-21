@@ -178,6 +178,18 @@ class WC_REST_Payments_Orders_Controller extends WC_Payments_REST_Controller {
 			// Actualize order status.
 			$this->order_service->mark_terminal_payment_completed( $order, $intent_id, $intent_status, $charge_id );
 
+			// Send email receipt to the customer.
+			$merchant_settings = [
+				'business_name' => WC_Payments::get_gateway()->get_option( 'account_business_name' ),
+				'support_info'  => [
+					'address' => WC_Payments::get_gateway()->get_option( 'account_business_support_address' ),
+					'phone'   => WC_Payments::get_gateway()->get_option( 'account_business_support_phone' ),
+					'email'   => WC_Payments::get_gateway()->get_option( 'account_business_support_email' ),
+				],
+			];
+			$charge            = $this->api_client->get_charge( $charge_id );
+			do_action( 'woocommerce_payments_new_receipt', $order_id, $merchant_settings, $charge );
+
 			return rest_ensure_response(
 				[
 					'status' => $result['status'],
