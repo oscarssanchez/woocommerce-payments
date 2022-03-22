@@ -21,5 +21,4 @@ declare const wcpaySettings: {
 		availableStates: Array< Record< string, string > >;
 	};
 	currentUserEmail: string;
-	viewDocumentNonce: string;
 };
