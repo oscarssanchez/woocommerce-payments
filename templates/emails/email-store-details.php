@@ -24,11 +24,13 @@ defined( 'ABSPATH' ) || exit;
 			<tr>
 				<td>
 					<h1><?php echo esc_html( $business_name ); ?></h1>
-					<div><?php echo esc_html( $support_address['line1'] ); ?></div>
-					<div><?php echo esc_html( $support_address['line2'] ); ?></div>
-					<div><?php echo esc_html( implode( ' ', [ $support_address['city'], $support_address['state'], $support_address['postal_code'], $support_address['country'] ] ) ); ?></div>
-					<div><?php echo esc_html( implode( ' ', [ $support_phone, $support_email ] ) ); ?></div>
-					<div><?php echo esc_html( gmdate( 'Y/m/d - H:iA' ) ); ?></div>
+					<?php if ( ! empty( $support_address ) ) { ?>
+						<div><?php echo esc_html( $support_address['line1'] ); ?></div>
+						<div><?php echo esc_html( $support_address['line2'] ); ?></div>
+						<div><?php echo esc_html( implode( ' ', [ $support_address['city'], $support_address['state'], $support_address['postal_code'], $support_address['country'] ] ) ); ?></div>
+						<div><?php echo esc_html( implode( ' ', [ $support_phone, $support_email ] ) ); ?></div>
+						<div><?php echo esc_html( gmdate( 'Y/m/d - H:iA' ) ); ?></div>
+					<?php } ?>
 				</td>
 			</tr>
 		</tbody>

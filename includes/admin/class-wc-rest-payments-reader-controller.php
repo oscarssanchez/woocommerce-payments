@@ -132,7 +132,7 @@ class WC_REST_Payments_Reader_Controller extends WC_Payments_REST_Controller {
 			[
 				'methods'             => WP_REST_Server::READABLE,
 				'callback'            => [ $this, 'generate_print_receipt' ],
-				'permission_callback' => '__return_true',
+				'permission_callback' => [ $this, 'check_permission' ],
 			]
 		);
 	}

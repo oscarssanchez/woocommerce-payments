@@ -203,7 +203,15 @@ if ( ! class_exists( 'WC_Payments_Email_New_Receipt' ) ) :
 		 * @return void
 		 */
 		public function compliance_details( $charge ) {
-			echo wp_json_encode( $charge );
+			wc_get_template(
+				'emails/email-compliance-details.php',
+				[
+					'payment_method_details' => $charge['payment_method_details']['card_present'],
+					'receipt'                => $charge['payment_method_details']['card_present']['receipt'],
+				],
+				'',
+				WCPAY_ABSPATH . 'templates/'
+			);
 		}
 
 		/**

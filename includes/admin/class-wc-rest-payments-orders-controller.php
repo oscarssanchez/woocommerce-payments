@@ -178,6 +178,7 @@ class WC_REST_Payments_Orders_Controller extends WC_Payments_REST_Controller {
 			// Actualize order status.
 			$this->order_service->mark_terminal_payment_completed( $order, $intent_id, $intent_status, $charge_id );
 
+			// TODO check if this is the right place for this functionality.
 			// Send email receipt to the customer.
 			$merchant_settings = [
 				'business_name' => WC_Payments::get_gateway()->get_option( 'account_business_name' ),

@@ -22,13 +22,35 @@ defined( 'ABSPATH' ) || exit;
 	<table class="td" cellspacing="0" cellpadding="6" style="width: 100%; font-family: 'Helvetica Neue', Helvetica, Roboto, Arial, sans-serif;" border="1">
 		<tbody>
 			<tr>
-				<td>
-					<h1><?php echo esc_html( $business_name ); ?></h1>
-					<div><?php echo esc_html( $support_address['line1'] ); ?></div>
-					<div><?php echo esc_html( $support_address['line2'] ); ?></div>
-					<div><?php echo esc_html( implode( ' ', [ $support_address['city'], $support_address['state'], $support_address['postal_code'], $support_address['country'] ] ) ); ?></div>
-					<div><?php echo esc_html( implode( ' ', [ $support_phone, $support_email ] ) ); ?></div>
-					<div><?php echo esc_html( gmdate( 'Y/m/d - H:iA' ) ); ?></div>
+				<th class="td" scope="row" colspan="2">
+					<?php esc_html_e( 'Payment Method', 'woocommerce-payments' ); ?>
+				</th>
+				<td class="td">
+					<div><?php echo esc_html( sprintf( '%s - %s', ucfirst( $payment_method_details['brand'] ), $payment_method_details['last4'] ) ); ?></div>
+				</td>
+			</tr>
+			<tr>
+				<th class="td" scope="row" colspan="2">
+					<?php esc_html_e( 'Application Name', 'woocommerce-payments' ); ?>
+				</th>
+				<td class="td">
+					<div><?php echo esc_html( ucfirst( $receipt['application_preferred_name'] ) ); ?></div>
+				</td>
+			</tr>
+			<tr>
+				<th class="td" scope="row" colspan="2">
+					<?php esc_html_e( 'AID', 'woocommerce-payments' ); ?>
+				</th>
+				<td class="td">
+					<div><?php echo esc_html( ucfirst( $receipt['dedicated_file_name'] ) ); ?></div>
+				</td>
+			</tr>
+			<tr>
+				<th class="td" scope="row" colspan="2">
+					<?php esc_html_e( 'Account Type', 'woocommerce-payments' ); ?>
+				</th>
+				<td class="td">
+					<div><?php echo esc_html( ucfirst( $receipt['account_type'] ) ); ?></div>
 				</td>
 			</tr>
 		</tbody>
