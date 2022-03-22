@@ -451,6 +451,7 @@ class WC_Payments_Admin {
 			],
 			'currentUserEmail'        => $current_user_email,
 			'currencyData'            => $currency_data,
+			'viewDocumentNonce'       => wp_create_nonce( 'wcpay-view-document' ),
 		];
 
 		wp_localize_script(
