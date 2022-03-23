@@ -51,11 +51,11 @@ if ( ! class_exists( 'WC_Payments_Email_New_Receipt' ) ) :
 			$this->placeholders   = [
 				'{order_date}'   => '',
 				'{order_number}' => '',
-				// TODO add receipt identifier?
 			];
+
 			// Content hooks.
-			add_action( 'woocommerce_payments_email_receipt_store_details', [ $this, 'store_details' ], 10, 1 );
-			add_action( 'woocommerce_payments_email_receipt_compliance_details', [ $this, 'compliance_details' ], 10, 1 );
+			add_action( 'woocommerce_payments_email_receipt_store_details', [ $this, 'store_details' ], 10, 2 );
+			add_action( 'woocommerce_payments_email_receipt_compliance_details', [ $this, 'compliance_details' ], 10, 2 );
 
 			// Triggers for this email.
 			add_action( 'woocommerce_payments_new_receipt_notification', [ $this, 'trigger' ], 10, 3 );
@@ -119,7 +119,7 @@ if ( ! class_exists( 'WC_Payments_Email_New_Receipt' ) ) :
 			 * @since 5.0.0
 			 * @param bool $allows Defaults to false.
 			 */
-			if ( 'true' === $email_already_sent && ! apply_filters( 'woocommerce_new_order_email_allows_resend', false ) ) {
+			if ( 'true' === $email_already_sent ) {
 				return;
 			}
 
@@ -147,7 +147,7 @@ if ( ! class_exists( 'WC_Payments_Email_New_Receipt' ) ) :
 					'charge'             => $this->charge,
 					'email_heading'      => $this->get_heading(),
 					'additional_content' => $this->get_additional_content(),
-					'sent_to_admin'      => true,
+					'sent_to_admin'      => false,
 					'plain_text'         => false,
 					'email'              => $this,
 				],
@@ -166,52 +166,84 @@ if ( ! class_exists( 'WC_Payments_Email_New_Receipt' ) ) :
 				$this->template_plain,
 				[
 					'order'              => $this->object,
+					'merchant_settings'  => $this->merchant_settings,
+					'charge'             => $this->charge,
 					'email_heading'      => $this->get_heading(),
 					'additional_content' => $this->get_additional_content(),
-					'sent_to_admin'      => true,
+					'sent_to_admin'      => false,
 					'plain_text'         => true,
 					'email'              => $this,
-				]
+				],
+				'',
+				WCPAY_ABSPATH . 'templates/'
 			);
 		}
 
 		/**
 		 * Get store details content html
 		 *
-		 * @param array $settings The settings.
+		 * @param array   $settings The settings.
+		 * @param boolean $plain_text Wether the content type is plain text.
 		 * @return void
 		 */
-		public function store_details( $settings ) {
-			// TODO plain text.
-			wc_get_template(
-				'emails/email-store-details.php',
-				[
-					'business_name'   => $settings['business_name'],
-					'support_address' => $settings['support_info']['address'],
-					'support_phone'   => $settings['support_info']['phone'],
-					'support_email'   => $settings['support_info']['email'],
-				],
-				'',
-				WCPAY_ABSPATH . 'templates/'
-			);
+		public function store_details( $settings, $plain_text ) {
+			if ( $plain_text ) {
+				wc_get_template(
+					'emails/plain/email-store-details.php',
+					[
+						'business_name'   => $settings['business_name'],
+						'support_address' => $settings['support_info']['address'],
+						'support_phone'   => $settings['support_info']['phone'],
+						'support_email'   => $settings['support_info']['email'],
+					],
+					'',
+					WCPAY_ABSPATH . 'templates/'
+				);
+
+			} else {
+				wc_get_template(
+					'emails/email-store-details.php',
+					[
+						'business_name'   => $settings['business_name'],
+						'support_address' => $settings['support_info']['address'],
+						'support_phone'   => $settings['support_info']['phone'],
+						'support_email'   => $settings['support_info']['email'],
+					],
+					'',
+					WCPAY_ABSPATH . 'templates/'
+				);
+			}
 		}
 
 		/**
 		 * Get compliance data content html
 		 *
-		 * @param array $charge The charge.
+		 * @param array   $charge The charge.
+		 * @param boolean $plain_text Wether the content type is plain text.
 		 * @return void
 		 */
-		public function compliance_details( $charge ) {
-			wc_get_template(
-				'emails/email-compliance-details.php',
-				[
-					'payment_method_details' => $charge['payment_method_details']['card_present'],
-					'receipt'                => $charge['payment_method_details']['card_present']['receipt'],
-				],
-				'',
-				WCPAY_ABSPATH . 'templates/'
-			);
+		public function compliance_details( $charge, $plain_text ) {
+			if ( $plain_text ) {
+				wc_get_template(
+					'emails/plain/email-compliance-details.php',
+					[
+						'payment_method_details' => $charge['payment_method_details']['card_present'],
+						'receipt'                => $charge['payment_method_details']['card_present']['receipt'],
+					],
+					'',
+					WCPAY_ABSPATH . 'templates/'
+				);
+			} else {
+				wc_get_template(
+					'emails/email-compliance-details.php',
+					[
+						'payment_method_details' => $charge['payment_method_details']['card_present'],
+						'receipt'                => $charge['payment_method_details']['card_present']['receipt'],
+					],
+					'',
+					WCPAY_ABSPATH . 'templates/'
+				);
+			}
 		}
 
 		/**
